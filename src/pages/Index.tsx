@@ -1,11 +1,28 @@
-// Update this page (the content is just a fallback if you fail to update the page)
-
 const Index = () => {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <div className="splash-gradient flex min-h-screen items-center justify-center">
+      <div className="splash-text text-center select-none">
+        <h1
+          className="leading-none tracking-tight"
+          style={{
+            fontFamily: "'Montserrat', sans-serif",
+            color: '#FDF8F0',
+            lineHeight: '0.85',
+          }}
+        >
+          <span
+            className="block text-7xl sm:text-8xl md:text-9xl"
+            style={{ fontWeight: 900 }}
+          >
+            APP
+          </span>
+          <span
+            className="block text-7xl sm:text-8xl md:text-9xl"
+            style={{ fontWeight: 400 }}
+          >
+            delivery
+          </span>
+        </h1>
       </div>
     </div>
   );
