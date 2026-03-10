@@ -297,7 +297,7 @@ export default function CreateStore() {
                       className="h-12 bg-white/[0.04] border-white/[0.08] text-white placeholder:text-white/25 rounded-xl focus-visible:ring-2 focus-visible:ring-[hsl(28,100%,50%/0.4)] focus-visible:ring-offset-0 focus-visible:border-white/[0.15] transition-all duration-300"
                     />
                     <p className="text-xs text-white/30 mt-1">
-                      Sua loja ficará em: <span className="font-medium text-[hsl(28,100%,55%)]">{form.slug || '...'}.seudominio.com.br</span>
+                      Sua loja ficará em: <span className="font-medium text-[hsl(28,100%,55%)]">{form.slug || '...'}.deliverylitoral.com.br</span>
                     </p>
                   </div>
                 </div>
