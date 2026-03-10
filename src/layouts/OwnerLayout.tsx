@@ -1,11 +1,12 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Crown, BarChart3, LogOut, Menu, X, UserPlus, CreditCard, Package, ShoppingCart, ToggleRight, Ticket } from 'lucide-react';
+import { Crown, BarChart3, LogOut, Menu, X, UserPlus, CreditCard, Package, ShoppingCart, ToggleRight, Ticket, Globe } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useAppConfig } from '@/contexts/AppConfigContext';
 
 const navItems = [
+  { icon: Globe, label: 'Plataforma', path: '/owner/platform' },
   { icon: Crown, label: 'Assinaturas', path: '/owner/subscriptions' },
   { icon: Ticket, label: 'Vouchers', path: '/owner/vouchers' },
   { icon: ToggleRight, label: 'Recursos do Plano', path: '/owner/store-features' },

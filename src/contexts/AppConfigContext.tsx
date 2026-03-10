@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useStoreId } from '@/contexts/TenantContext';
+import { useStoreId, useTenant } from '@/contexts/TenantContext';
+import { DEFAULT_STORE_ID } from '@/lib/constants';
 
 // ============================================================================
 // SINGLE SOURCE OF TRUTH FOR APP CONFIGURATION
@@ -211,8 +212,60 @@ function updateDocumentMeta(config: AppConfig) {
   }
 }
 
+// Known portal domains where we should use platform_settings instead of store app_settings
+const PORTAL_BASE_DOMAINS = ['deliverylitoral.com.br'];
+const PORTAL_HOSTS = ['app', 'www', 'admin', 'api'];
+
+function isPortalDomain(): boolean {
+  const host = window.location.hostname.split(':')[0];
+  if (host === 'localhost' || /^\d+\.\d+\.\d+\.\d+$/.test(host)) return true;
+  if (host.endsWith('.lovable.app') || host.endsWith('.lovableproject.com')) return true;
+  if (PORTAL_BASE_DOMAINS.some(d => host === d || host === `www.${d}`)) return true;
+  if (PORTAL_BASE_DOMAINS.some(d => host.endsWith(`.${d}`) && PORTAL_HOSTS.includes(host.slice(0, -(`.${d}`).length)))) return true;
+  return false;
+}
+
+// Apply platform settings to document meta (for portal pages)
+function applyPlatformMeta(platform: any) {
+  if (platform.platform_name) {
+    document.title = platform.platform_name;
+  }
+  if (platform.theme_color) {
+    const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+    if (themeColorMeta) themeColorMeta.setAttribute('content', platform.theme_color);
+  }
+  if (platform.platform_favicon_url) {
+    const favicon = document.querySelector('link[rel="icon"]') as HTMLLinkElement | null;
+    if (favicon) favicon.href = platform.platform_favicon_url;
+    const pwaIcon = document.getElementById('pwa-icon') as HTMLLinkElement | null;
+    if (pwaIcon) pwaIcon.href = platform.platform_favicon_url;
+  }
+  // OG tags
+  const setMeta = (selector: string, content: string) => {
+    const el = document.querySelector(selector);
+    if (el) el.setAttribute('content', content);
+  };
+  if (platform.platform_name) {
+    setMeta('meta[property="og:title"]', platform.platform_name);
+    setMeta('meta[name="twitter:title"]', platform.platform_name);
+    setMeta('meta[property="og:site_name"]', platform.platform_name);
+    setMeta('meta[name="apple-mobile-web-app-title"]', platform.platform_name);
+    setMeta('meta[name="application-name"]', platform.platform_name);
+  }
+  if (platform.platform_description) {
+    setMeta('meta[name="description"]', platform.platform_description);
+    setMeta('meta[property="og:description"]', platform.platform_description);
+    setMeta('meta[name="twitter:description"]', platform.platform_description);
+  }
+  if (platform.platform_og_image_url) {
+    setMeta('meta[property="og:image"]', platform.platform_og_image_url);
+    setMeta('meta[name="twitter:image"]', platform.platform_og_image_url);
+  }
+}
+
 export function AppConfigProvider({ children }: { children: ReactNode }) {
   const storeId = useStoreId();
+  const { store } = useTenant();
   const [config, setConfig] = useState<AppConfig | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -221,6 +274,23 @@ export function AppConfigProvider({ children }: { children: ReactNode }) {
     try {
       setIsLoading(true);
       setError(null);
+
+      // On portal domain (no store subdomain), apply platform_settings for meta tags
+      const onPortal = isPortalDomain();
+      if (onPortal) {
+        try {
+          const { data: platformData } = await (supabase
+            .from('platform_settings') as any)
+            .select('*')
+            .limit(1)
+            .maybeSingle();
+          if (platformData) {
+            applyPlatformMeta(platformData);
+          }
+        } catch {
+          // ignore - fallback to store settings
+        }
+      }
       
       const { data, error: fetchError } = await supabase
         .from('app_settings')
@@ -235,10 +305,12 @@ export function AppConfigProvider({ children }: { children: ReactNode }) {
         const version = data.updated_at || new Date().toISOString();
         invalidateStaleLocalStorage(version);
         
-        // Update document meta
-        updateDocumentMeta(data as AppConfig);
+        // Only apply store branding when NOT on portal
+        if (!onPortal) {
+          updateDocumentMeta(data as AppConfig);
+        }
         
-        // Apply brand colors to CSS variables
+        // Always apply brand colors (needed for admin panel)
         applyBrandColorsToCSS(data as AppConfig);
         
         setConfig(data as AppConfig);

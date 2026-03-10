@@ -2404,6 +2404,57 @@ export type Database = {
           },
         ]
       }
+      platform_settings: {
+        Row: {
+          created_at: string
+          id: string
+          platform_description: string | null
+          platform_favicon_url: string | null
+          platform_logo_url: string | null
+          platform_name: string
+          platform_og_image_url: string | null
+          platform_short_name: string
+          privacy_url: string | null
+          support_email: string | null
+          support_whatsapp: string | null
+          terms_url: string | null
+          theme_color: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          platform_description?: string | null
+          platform_favicon_url?: string | null
+          platform_logo_url?: string | null
+          platform_name?: string
+          platform_og_image_url?: string | null
+          platform_short_name?: string
+          privacy_url?: string | null
+          support_email?: string | null
+          support_whatsapp?: string | null
+          terms_url?: string | null
+          theme_color?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          platform_description?: string | null
+          platform_favicon_url?: string | null
+          platform_logo_url?: string | null
+          platform_name?: string
+          platform_og_image_url?: string | null
+          platform_short_name?: string
+          privacy_url?: string | null
+          support_email?: string | null
+          support_whatsapp?: string | null
+          terms_url?: string | null
+          theme_color?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       product_option_items: {
         Row: {
           active: boolean | null
