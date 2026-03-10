@@ -60,7 +60,7 @@ export function usePlanEntitlements() {
         return null;
       }
       const row = Array.isArray(data) ? data[0] : data;
-      return (row as StoreUsage) || null;
+      return (row as unknown as StoreUsage) || null;
     },
     enabled: !!storeId,
     staleTime: 30_000,
