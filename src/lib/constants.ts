@@ -1,4 +1,4 @@
-export const DEFAULT_STORE_ID = '00000000-0000-0000-0000-000000000001';
+export const DEFAULT_STORE_ID = '5bbece79-1112-4d71-bb66-3e55d17a280e';
 
 export const ORDER_STATUS_LABELS: Record<string, string> = {
   created: 'Aguardando',
