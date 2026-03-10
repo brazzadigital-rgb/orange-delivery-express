@@ -6,6 +6,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { useAppConfig } from '@/contexts/AppConfigContext';
 
 const navItems = [
+  { icon: Globe, label: 'Plataforma', path: '/owner/platform' },
   { icon: Crown, label: 'Assinaturas', path: '/owner/subscriptions' },
   { icon: Ticket, label: 'Vouchers', path: '/owner/vouchers' },
   { icon: ToggleRight, label: 'Recursos do Plano', path: '/owner/store-features' },
