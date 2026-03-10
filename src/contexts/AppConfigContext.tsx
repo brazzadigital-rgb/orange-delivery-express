@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { useStoreId } from '@/contexts/TenantContext';
+import { useStoreId, useTenant } from '@/contexts/TenantContext';
+import { DEFAULT_STORE_ID } from '@/lib/constants';
 
 // ============================================================================
 // SINGLE SOURCE OF TRUTH FOR APP CONFIGURATION
