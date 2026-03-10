@@ -202,8 +202,8 @@ export default function AdminTables() {
     setClosingLoading(true);
     try {
       // Update all pending orders for this session to 'delivered'
-      await supabase
-        .from('orders')
+      await (supabase
+        .from('orders') as any)
         .update({ status: 'delivered', payment_status: 'paid' })
         .eq('table_session_id', closingSession.id)
         .in('status', ['created', 'accepted', 'preparing', 'ready']);

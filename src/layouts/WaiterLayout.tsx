@@ -94,8 +94,8 @@ export function WaiterLayout() {
     const poll = async () => {
       if (!pollActive) return;
       try {
-        const { data } = await supabase
-          .from('orders')
+        const { data } = await (supabase
+          .from('orders') as any)
           .select('id, order_number, table_id, restaurant_tables(number)')
           .eq('delivery_type', 'table')
           .eq('kitchen_status', 'ready')
