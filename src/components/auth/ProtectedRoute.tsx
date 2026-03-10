@@ -189,12 +189,16 @@ export function ProtectedRoute({
 
   // Check role permission - check if ANY of the user's roles match allowedRoles
   // Global owners (SaaS super admins) can access admin/staff routes on any store subdomain
+  // Global admins can also access owner routes (they are platform-level super admins)
   const isGlobalOwner = allUserRoles.has('owner');
+  const isGlobalAdmin = allUserRoles.has('admin') && 
+    (globalRolesRef.current?.has('admin') ?? false);
   const hasAllowedRole = allowedRoles.some(role => allUserRoles.has(role)) || 
-    (isGlobalOwner && allowedRoles.some(r => ['admin', 'staff'].includes(r)));
+    (isGlobalOwner && allowedRoles.some(r => ['admin', 'staff'].includes(r))) ||
+    (isGlobalAdmin && allowedRoles.some(r => ['owner', 'admin', 'staff'].includes(r)));
   
   if (allUserRoles.size > 0 && !hasAllowedRole) {
-    if (isGlobalOwner) {
+    if (isGlobalOwner || isGlobalAdmin) {
       const host = window.location.hostname.split(':')[0];
       const PORTAL_BASE_DOMAINS = ['deliverylitoral.com.br'];
       const isPortal = host === 'localhost' || /^\d+\.\d+\.\d+\.\d+$/.test(host) || 
