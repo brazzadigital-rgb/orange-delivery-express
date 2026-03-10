@@ -49,12 +49,15 @@ export function ProtectedRoute({
           .select('role')
           .eq('user_id', user.id);
 
+        const globalRoles = new Set<string>();
         if (globalRolesData) {
           globalRolesData.forEach(r => {
             combinedRoles.add(r.role);
+            globalRoles.add(r.role);
             if (r.role === 'owner') hasGlobalOwnerRole = true;
           });
         }
+        globalRolesRef.current = globalRoles;
 
         // Fetch store-level roles (store_users table)
         // But skip mapping for users who have a global 'owner' role
