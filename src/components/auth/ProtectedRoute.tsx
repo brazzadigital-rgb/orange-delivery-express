@@ -28,6 +28,7 @@ export function ProtectedRoute({
   const location = useLocation();
   const [userRole, setUserRole] = useState<AppRole | null>(null);
   const [allUserRoles, setAllUserRoles] = useState<Set<string>>(new Set());
+  const globalRolesRef = useRef<Set<string>>(new Set());
   const [roleLoading, setRoleLoading] = useState(true);
   const [hasStoreAccess, setHasStoreAccess] = useState<boolean | null>(null);
 
