@@ -911,9 +911,9 @@ export type Database = {
       }
     }
     Enums: {
-      app_role: "customer" | "admin" | "staff" | "driver"
+      app_role: "customer" | "admin" | "staff" | "driver" | "owner" | "waiter"
       coupon_type: "percent" | "value" | "free_delivery"
-      delivery_type: "delivery" | "pickup"
+      delivery_type: "delivery" | "pickup" | "table"
       notification_type: "order" | "promo" | "system"
       option_type: "size" | "crust" | "extra" | "half_half" | "note"
       order_status:
@@ -925,6 +925,8 @@ export type Database = {
         | "out_for_delivery"
         | "delivered"
         | "canceled"
+        | "rejected"
+        | "served"
       payment_method: "pix" | "card" | "cash"
       payment_status: "pending" | "paid" | "failed" | "refunded"
     }
@@ -1054,9 +1056,9 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["customer", "admin", "staff", "driver"],
+      app_role: ["customer", "admin", "staff", "driver", "owner", "waiter"],
       coupon_type: ["percent", "value", "free_delivery"],
-      delivery_type: ["delivery", "pickup"],
+      delivery_type: ["delivery", "pickup", "table"],
       notification_type: ["order", "promo", "system"],
       option_type: ["size", "crust", "extra", "half_half", "note"],
       order_status: [
@@ -1068,6 +1070,8 @@ export const Constants = {
         "out_for_delivery",
         "delivered",
         "canceled",
+        "rejected",
+        "served",
       ],
       payment_method: ["pix", "card", "cash"],
       payment_status: ["pending", "paid", "failed", "refunded"],
