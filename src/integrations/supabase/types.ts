@@ -366,6 +366,66 @@ export type Database = {
           },
         ]
       }
+      billing_invoices: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string | null
+          due_date: string | null
+          gateway_invoice_id: string | null
+          id: string
+          paid_at: string | null
+          period_end: string | null
+          period_start: string | null
+          status: string | null
+          store_id: string
+          subscription_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string | null
+          due_date?: string | null
+          gateway_invoice_id?: string | null
+          id?: string
+          paid_at?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          status?: string | null
+          store_id: string
+          subscription_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string | null
+          due_date?: string | null
+          gateway_invoice_id?: string | null
+          id?: string
+          paid_at?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          status?: string | null
+          store_id?: string
+          subscription_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_invoices_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "billing_invoices_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "store_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       billing_payments: {
         Row: {
           amount: number
@@ -424,11 +484,16 @@ export type Database = {
           created_at: string
           description: string | null
           features: Json | null
+          has_analytics: boolean | null
+          has_api_access: boolean | null
+          has_custom_domain: boolean | null
+          has_priority_support: boolean | null
           id: string
           is_active: boolean | null
           is_default: boolean | null
           max_admins: number | null
           max_banners: number | null
+          max_categories: number | null
           max_coupons: number | null
           max_delivery_zones: number | null
           max_drivers: number | null
@@ -437,6 +502,7 @@ export type Database = {
           max_products: number | null
           max_promotions: number | null
           max_tables: number | null
+          max_users: number | null
           max_waiters: number | null
           monthly_price: number | null
           name: string
@@ -452,11 +518,16 @@ export type Database = {
           created_at?: string
           description?: string | null
           features?: Json | null
+          has_analytics?: boolean | null
+          has_api_access?: boolean | null
+          has_custom_domain?: boolean | null
+          has_priority_support?: boolean | null
           id?: string
           is_active?: boolean | null
           is_default?: boolean | null
           max_admins?: number | null
           max_banners?: number | null
+          max_categories?: number | null
           max_coupons?: number | null
           max_delivery_zones?: number | null
           max_drivers?: number | null
@@ -465,6 +536,7 @@ export type Database = {
           max_products?: number | null
           max_promotions?: number | null
           max_tables?: number | null
+          max_users?: number | null
           max_waiters?: number | null
           monthly_price?: number | null
           name: string
@@ -480,11 +552,16 @@ export type Database = {
           created_at?: string
           description?: string | null
           features?: Json | null
+          has_analytics?: boolean | null
+          has_api_access?: boolean | null
+          has_custom_domain?: boolean | null
+          has_priority_support?: boolean | null
           id?: string
           is_active?: boolean | null
           is_default?: boolean | null
           max_admins?: number | null
           max_banners?: number | null
+          max_categories?: number | null
           max_coupons?: number | null
           max_delivery_zones?: number | null
           max_drivers?: number | null
@@ -493,6 +570,7 @@ export type Database = {
           max_products?: number | null
           max_promotions?: number | null
           max_tables?: number | null
+          max_users?: number | null
           max_waiters?: number | null
           monthly_price?: number | null
           name?: string
@@ -2449,6 +2527,7 @@ export type Database = {
           paid_at: string | null
           plan_code: string | null
           plan_months: number | null
+          plan_name: string | null
           status: string | null
           store_id: string
           updated_at: string
@@ -2470,6 +2549,7 @@ export type Database = {
           paid_at?: string | null
           plan_code?: string | null
           plan_months?: number | null
+          plan_name?: string | null
           status?: string | null
           store_id: string
           updated_at?: string
@@ -2491,6 +2571,7 @@ export type Database = {
           paid_at?: string | null
           plan_code?: string | null
           plan_months?: number | null
+          plan_name?: string | null
           status?: string | null
           store_id?: string
           updated_at?: string
@@ -3135,6 +3216,9 @@ export type Database = {
       store_subscriptions: {
         Row: {
           amount: number | null
+          billing_cycle: string | null
+          cancel_at_period_end: boolean | null
+          canceled_at: string | null
           created_at: string
           currency: string | null
           current_period_end: string | null
@@ -3142,15 +3226,21 @@ export type Database = {
           gateway: string | null
           gateway_subscription_id: string | null
           id: string
+          owner_user_id: string | null
           plan_code: string
+          plan_id: string | null
           plan_months: number | null
           status: string
           store_id: string
+          store_name: string | null
           trial_ends_at: string | null
           updated_at: string
         }
         Insert: {
           amount?: number | null
+          billing_cycle?: string | null
+          cancel_at_period_end?: boolean | null
+          canceled_at?: string | null
           created_at?: string
           currency?: string | null
           current_period_end?: string | null
@@ -3158,15 +3248,21 @@ export type Database = {
           gateway?: string | null
           gateway_subscription_id?: string | null
           id?: string
+          owner_user_id?: string | null
           plan_code?: string
+          plan_id?: string | null
           plan_months?: number | null
           status?: string
           store_id: string
+          store_name?: string | null
           trial_ends_at?: string | null
           updated_at?: string
         }
         Update: {
           amount?: number | null
+          billing_cycle?: string | null
+          cancel_at_period_end?: boolean | null
+          canceled_at?: string | null
           created_at?: string
           currency?: string | null
           current_period_end?: string | null
@@ -3174,10 +3270,13 @@ export type Database = {
           gateway?: string | null
           gateway_subscription_id?: string | null
           id?: string
+          owner_user_id?: string | null
           plan_code?: string
+          plan_id?: string | null
           plan_months?: number | null
           status?: string
           store_id?: string
+          store_name?: string | null
           trial_ends_at?: string | null
           updated_at?: string
         }
@@ -3794,41 +3893,70 @@ export type Database = {
       vouchers: {
         Row: {
           active: boolean | null
+          amount: number | null
           code: string
           created_at: string
+          description: string | null
           discount_percent: number | null
           expires_at: string | null
           id: string
           max_uses: number | null
+          min_plan: string | null
+          owner_user_id: string | null
           plan_code: string | null
           plan_months: number | null
+          plan_name: string | null
+          store_id: string | null
+          type: string | null
           used_count: number | null
         }
         Insert: {
           active?: boolean | null
+          amount?: number | null
           code: string
           created_at?: string
+          description?: string | null
           discount_percent?: number | null
           expires_at?: string | null
           id?: string
           max_uses?: number | null
+          min_plan?: string | null
+          owner_user_id?: string | null
           plan_code?: string | null
           plan_months?: number | null
+          plan_name?: string | null
+          store_id?: string | null
+          type?: string | null
           used_count?: number | null
         }
         Update: {
           active?: boolean | null
+          amount?: number | null
           code?: string
           created_at?: string
+          description?: string | null
           discount_percent?: number | null
           expires_at?: string | null
           id?: string
           max_uses?: number | null
+          min_plan?: string | null
+          owner_user_id?: string | null
           plan_code?: string | null
           plan_months?: number | null
+          plan_name?: string | null
+          store_id?: string | null
+          type?: string | null
           used_count?: number | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "vouchers_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       waiter_assignments: {
         Row: {
@@ -3893,6 +4021,7 @@ export type Database = {
         Row: {
           active: boolean | null
           created_at: string
+          display_name: string | null
           id: string
           name: string | null
           store_id: string
@@ -3901,6 +4030,7 @@ export type Database = {
         Insert: {
           active?: boolean | null
           created_at?: string
+          display_name?: string | null
           id?: string
           name?: string | null
           store_id: string
@@ -3909,6 +4039,7 @@ export type Database = {
         Update: {
           active?: boolean | null
           created_at?: string
+          display_name?: string | null
           id?: string
           name?: string | null
           store_id?: string
@@ -4037,15 +4168,26 @@ export type Database = {
         Args: { p_store_id: string; p_user_id: string }
         Returns: boolean
       }
-      create_table_order: {
-        Args: {
-          p_items: Json
-          p_notes?: string
-          p_session_id: string
-          p_store_id: string
-        }
-        Returns: string
-      }
+      create_table_order:
+        | {
+            Args: {
+              p_items: Json
+              p_notes?: string
+              p_session_id: string
+              p_store_id: string
+            }
+            Returns: string
+          }
+        | {
+            Args: {
+              p_items: Json
+              p_notes?: string
+              p_session_id: string
+              p_store_id: string
+              p_table_id: string
+            }
+            Returns: string
+          }
       get_billing_gate: { Args: { p_store_id: string }; Returns: Json }
       get_store_current_usage: { Args: { p_store_id: string }; Returns: Json }
       get_store_plan_entitlements: {
