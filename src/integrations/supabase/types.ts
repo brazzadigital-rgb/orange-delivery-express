@@ -311,6 +311,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "audit_logs_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "v_customer_stats"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       banners: {
@@ -365,6 +372,33 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      billing_events: {
+        Row: {
+          id: string
+          mp_event_id: string | null
+          mp_resource_id: string | null
+          raw_payload: Json
+          received_at: string
+          topic: string | null
+        }
+        Insert: {
+          id?: string
+          mp_event_id?: string | null
+          mp_resource_id?: string | null
+          raw_payload?: Json
+          received_at?: string
+          topic?: string | null
+        }
+        Update: {
+          id?: string
+          mp_event_id?: string | null
+          mp_resource_id?: string | null
+          raw_payload?: Json
+          received_at?: string
+          topic?: string | null
+        }
+        Relationships: []
       }
       billing_invoices: {
         Row: {
@@ -803,6 +837,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "carts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_customer_stats"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       categories: {
@@ -848,6 +889,51 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      cep_cache: {
+        Row: {
+          cep: string
+          city: string
+          confidence: string | null
+          country: string | null
+          created_at: string
+          lat: number | null
+          lng: number | null
+          neighborhood: string | null
+          source: string | null
+          state: string
+          street: string | null
+          updated_at: string
+        }
+        Insert: {
+          cep: string
+          city: string
+          confidence?: string | null
+          country?: string | null
+          created_at?: string
+          lat?: number | null
+          lng?: number | null
+          neighborhood?: string | null
+          source?: string | null
+          state: string
+          street?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cep?: string
+          city?: string
+          confidence?: string | null
+          country?: string | null
+          created_at?: string
+          lat?: number | null
+          lng?: number | null
+          neighborhood?: string | null
+          source?: string | null
+          state?: string
+          street?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       coupons: {
         Row: {
@@ -1784,6 +1870,7 @@ export type Database = {
           channel: string
           coupon_id: string | null
           created_at: string
+          created_by_source: string | null
           delivery_fee: number | null
           delivery_type: Database["public"]["Enums"]["delivery_type"]
           discount: number | null
@@ -1791,6 +1878,7 @@ export type Database = {
           estimated_minutes: number | null
           external_order_id: string | null
           id: string
+          kitchen_status: string
           loyalty_earn_processed: boolean
           loyalty_points_earned: number
           loyalty_points_spent: number
@@ -1799,6 +1887,8 @@ export type Database = {
           merchant_id_ifood: string | null
           notes: string | null
           order_number: number
+          original_session_id: string | null
+          original_table_number: number | null
           payment_method: Database["public"]["Enums"]["payment_method"]
           payment_status: Database["public"]["Enums"]["payment_status"]
           raw_payload: Json | null
@@ -1806,9 +1896,12 @@ export type Database = {
           status: Database["public"]["Enums"]["order_status"]
           store_id: string
           subtotal: number
+          table_id: string | null
+          table_session_id: string | null
           total: number
           updated_at: string
           user_id: string | null
+          waiter_user_id: string | null
         }
         Insert: {
           address_id?: string | null
@@ -1820,6 +1913,7 @@ export type Database = {
           channel?: string
           coupon_id?: string | null
           created_at?: string
+          created_by_source?: string | null
           delivery_fee?: number | null
           delivery_type?: Database["public"]["Enums"]["delivery_type"]
           discount?: number | null
@@ -1827,6 +1921,7 @@ export type Database = {
           estimated_minutes?: number | null
           external_order_id?: string | null
           id?: string
+          kitchen_status?: string
           loyalty_earn_processed?: boolean
           loyalty_points_earned?: number
           loyalty_points_spent?: number
@@ -1835,6 +1930,8 @@ export type Database = {
           merchant_id_ifood?: string | null
           notes?: string | null
           order_number?: number
+          original_session_id?: string | null
+          original_table_number?: number | null
           payment_method?: Database["public"]["Enums"]["payment_method"]
           payment_status?: Database["public"]["Enums"]["payment_status"]
           raw_payload?: Json | null
@@ -1842,9 +1939,12 @@ export type Database = {
           status?: Database["public"]["Enums"]["order_status"]
           store_id: string
           subtotal: number
+          table_id?: string | null
+          table_session_id?: string | null
           total: number
           updated_at?: string
           user_id?: string | null
+          waiter_user_id?: string | null
         }
         Update: {
           address_id?: string | null
@@ -1856,6 +1956,7 @@ export type Database = {
           channel?: string
           coupon_id?: string | null
           created_at?: string
+          created_by_source?: string | null
           delivery_fee?: number | null
           delivery_type?: Database["public"]["Enums"]["delivery_type"]
           discount?: number | null
@@ -1863,6 +1964,7 @@ export type Database = {
           estimated_minutes?: number | null
           external_order_id?: string | null
           id?: string
+          kitchen_status?: string
           loyalty_earn_processed?: boolean
           loyalty_points_earned?: number
           loyalty_points_spent?: number
@@ -1871,6 +1973,8 @@ export type Database = {
           merchant_id_ifood?: string | null
           notes?: string | null
           order_number?: number
+          original_session_id?: string | null
+          original_table_number?: number | null
           payment_method?: Database["public"]["Enums"]["payment_method"]
           payment_status?: Database["public"]["Enums"]["payment_status"]
           raw_payload?: Json | null
@@ -1878,9 +1982,12 @@ export type Database = {
           status?: Database["public"]["Enums"]["order_status"]
           store_id?: string
           subtotal?: number
+          table_id?: string | null
+          table_session_id?: string | null
           total?: number
           updated_at?: string
           user_id?: string | null
+          waiter_user_id?: string | null
         }
         Relationships: [
           {
@@ -1905,11 +2012,32 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "orders_table_id_fkey"
+            columns: ["table_id"]
+            isOneToOne: false
+            referencedRelation: "restaurant_tables"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_table_session_id_fkey"
+            columns: ["table_session_id"]
+            isOneToOne: false
+            referencedRelation: "table_sessions"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "orders_user_id_profiles_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "orders_user_id_profiles_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_customer_stats"
+            referencedColumns: ["user_id"]
           },
         ]
       }
@@ -2430,6 +2558,7 @@ export type Database = {
       profiles: {
         Row: {
           avatar_url: string | null
+          birth_date: string | null
           created_at: string
           email: string | null
           id: string
@@ -2439,6 +2568,7 @@ export type Database = {
         }
         Insert: {
           avatar_url?: string | null
+          birth_date?: string | null
           created_at?: string
           email?: string | null
           id: string
@@ -2448,6 +2578,7 @@ export type Database = {
         }
         Update: {
           avatar_url?: string | null
+          birth_date?: string | null
           created_at?: string
           email?: string | null
           id?: string
@@ -2626,6 +2757,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "push_delivery_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_customer_stats"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       push_subscriptions: {
@@ -2664,6 +2802,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "push_subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_customer_stats"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       restaurant_tables: {
@@ -2680,6 +2825,7 @@ export type Database = {
           qr_token: string | null
           status: string
           store_id: string
+          table_pin: string | null
         }
         Insert: {
           active?: boolean | null
@@ -2694,6 +2840,7 @@ export type Database = {
           qr_token?: string | null
           status?: string
           store_id: string
+          table_pin?: string | null
         }
         Update: {
           active?: boolean | null
@@ -2708,6 +2855,7 @@ export type Database = {
           qr_token?: string | null
           status?: string
           store_id?: string
+          table_pin?: string | null
         }
         Relationships: [
           {
@@ -3011,6 +3159,41 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "store_loyalty_settings_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      store_payment_settings: {
+        Row: {
+          created_at: string
+          efi_enabled: boolean
+          id: string
+          mp_enabled: boolean
+          store_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          efi_enabled?: boolean
+          id?: string
+          mp_enabled?: boolean
+          store_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          efi_enabled?: boolean
+          id?: string
+          mp_enabled?: boolean
+          store_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_payment_settings_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: true
             referencedRelation: "stores"
@@ -3337,6 +3520,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "store_users_user_id_profiles_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_customer_stats"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       stores: {
@@ -3419,6 +3609,8 @@ export type Database = {
           paid_at: string | null
           period_end: string | null
           period_start: string | null
+          provider: string | null
+          provider_payment_id: string | null
           status: string | null
           store_id: string
           subscription_id: string | null
@@ -3433,6 +3625,8 @@ export type Database = {
           paid_at?: string | null
           period_end?: string | null
           period_start?: string | null
+          provider?: string | null
+          provider_payment_id?: string | null
           status?: string | null
           store_id: string
           subscription_id?: string | null
@@ -3447,6 +3641,8 @@ export type Database = {
           paid_at?: string | null
           period_end?: string | null
           period_start?: string | null
+          provider?: string | null
+          provider_payment_id?: string | null
           status?: string | null
           store_id?: string
           subscription_id?: string | null
@@ -3479,6 +3675,9 @@ export type Database = {
           current_period_end: string | null
           current_period_start: string | null
           discount_percent: number | null
+          efi_pix_copia_cola: string | null
+          efi_qrcode_image: string | null
+          efi_txid: string | null
           final_monthly_price: number | null
           gateway: string | null
           gateway_customer_id: string | null
@@ -3493,6 +3692,7 @@ export type Database = {
           mp_payer_email: string | null
           mp_preapproval_id: string | null
           next_due_date: string | null
+          payment_provider: string | null
           plan_code: string
           plan_months: number | null
           status: string
@@ -3511,6 +3711,9 @@ export type Database = {
           current_period_end?: string | null
           current_period_start?: string | null
           discount_percent?: number | null
+          efi_pix_copia_cola?: string | null
+          efi_qrcode_image?: string | null
+          efi_txid?: string | null
           final_monthly_price?: number | null
           gateway?: string | null
           gateway_customer_id?: string | null
@@ -3525,6 +3728,7 @@ export type Database = {
           mp_payer_email?: string | null
           mp_preapproval_id?: string | null
           next_due_date?: string | null
+          payment_provider?: string | null
           plan_code?: string
           plan_months?: number | null
           status?: string
@@ -3543,6 +3747,9 @@ export type Database = {
           current_period_end?: string | null
           current_period_start?: string | null
           discount_percent?: number | null
+          efi_pix_copia_cola?: string | null
+          efi_qrcode_image?: string | null
+          efi_txid?: string | null
           final_monthly_price?: number | null
           gateway?: string | null
           gateway_customer_id?: string | null
@@ -3557,6 +3764,7 @@ export type Database = {
           mp_payer_email?: string | null
           mp_preapproval_id?: string | null
           next_due_date?: string | null
+          payment_provider?: string | null
           plan_code?: string
           plan_months?: number | null
           status?: string
@@ -3572,6 +3780,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "stores"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_customer_stats"
+            referencedColumns: ["user_id"]
           },
         ]
       }
@@ -3655,6 +3877,65 @@ export type Database = {
           },
         ]
       }
+      table_notifications: {
+        Row: {
+          channel: string
+          created_at: string
+          id: string
+          order_id: string
+          status: string
+          store_id: string
+          table_session_id: string
+        }
+        Insert: {
+          channel?: string
+          created_at?: string
+          id?: string
+          order_id: string
+          status?: string
+          store_id: string
+          table_session_id: string
+        }
+        Update: {
+          channel?: string
+          created_at?: string
+          id?: string
+          order_id?: string
+          status?: string
+          store_id?: string
+          table_session_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "table_notifications_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "table_notifications_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "v_orders_enriched"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "table_notifications_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "table_notifications_table_session_id_fkey"
+            columns: ["table_session_id"]
+            isOneToOne: false
+            referencedRelation: "table_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       table_session_items: {
         Row: {
           created_at: string
@@ -3712,6 +3993,56 @@ export type Database = {
           },
         ]
       }
+      table_session_tokens: {
+        Row: {
+          device_fingerprint: string | null
+          expires_at: string | null
+          id: string
+          ip_hash: string | null
+          is_verified: boolean
+          issued_at: string
+          last_used_at: string | null
+          revoked_at: string | null
+          status: string
+          table_session_id: string
+          token: string
+        }
+        Insert: {
+          device_fingerprint?: string | null
+          expires_at?: string | null
+          id?: string
+          ip_hash?: string | null
+          is_verified?: boolean
+          issued_at?: string
+          last_used_at?: string | null
+          revoked_at?: string | null
+          status?: string
+          table_session_id: string
+          token?: string
+        }
+        Update: {
+          device_fingerprint?: string | null
+          expires_at?: string | null
+          id?: string
+          ip_hash?: string | null
+          is_verified?: boolean
+          issued_at?: string
+          last_used_at?: string | null
+          revoked_at?: string | null
+          status?: string
+          table_session_id?: string
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "table_session_tokens_table_session_id_fkey"
+            columns: ["table_session_id"]
+            isOneToOne: false
+            referencedRelation: "table_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       table_sessions: {
         Row: {
           closed_at: string | null
@@ -3719,13 +4050,17 @@ export type Database = {
           created_at: string
           customer_name: string | null
           customer_phone: string | null
+          display_tables: string | null
           id: string
           last_call_at: string | null
+          merged_at: string | null
+          merged_into_session_id: string | null
           notes: string | null
           opened_at: string
           opened_by: string | null
           opened_by_waiter_id: string | null
           push_subscription: Json | null
+          session_kind: string
           status: string
           store_id: string
           table_id: string
@@ -3737,13 +4072,17 @@ export type Database = {
           created_at?: string
           customer_name?: string | null
           customer_phone?: string | null
+          display_tables?: string | null
           id?: string
           last_call_at?: string | null
+          merged_at?: string | null
+          merged_into_session_id?: string | null
           notes?: string | null
           opened_at?: string
           opened_by?: string | null
           opened_by_waiter_id?: string | null
           push_subscription?: Json | null
+          session_kind?: string
           status?: string
           store_id: string
           table_id: string
@@ -3755,19 +4094,30 @@ export type Database = {
           created_at?: string
           customer_name?: string | null
           customer_phone?: string | null
+          display_tables?: string | null
           id?: string
           last_call_at?: string | null
+          merged_at?: string | null
+          merged_into_session_id?: string | null
           notes?: string | null
           opened_at?: string
           opened_by?: string | null
           opened_by_waiter_id?: string | null
           push_subscription?: Json | null
+          session_kind?: string
           status?: string
           store_id?: string
           table_id?: string
           total?: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "table_sessions_merged_into_session_id_fkey"
+            columns: ["merged_into_session_id"]
+            isOneToOne: false
+            referencedRelation: "table_sessions"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "table_sessions_store_id_fkey"
             columns: ["store_id"]
@@ -3829,6 +4179,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "user_notification_preferences_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "v_customer_stats"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       user_privacy_settings: {
@@ -3887,6 +4244,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_roles_user_id_profiles_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_customer_stats"
+            referencedColumns: ["user_id"]
           },
         ]
       }
@@ -4086,6 +4450,47 @@ export type Database = {
           },
         ]
       }
+      v_customer_stats: {
+        Row: {
+          avg_ticket: number | null
+          churn_risk_score: number | null
+          days_since_last_order: number | null
+          email: string | null
+          last_order_at: string | null
+          name: string | null
+          phone: string | null
+          total_orders: number | null
+          total_spent: number | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
+      v_driver_stats: {
+        Row: {
+          avg_delivery_time_min: number | null
+          deliveries_count: number | null
+          driver_id: string | null
+          driver_name: string | null
+          driver_phone: string | null
+          last_active_at: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_user_id_profiles_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_roles_user_id_profiles_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "v_customer_stats"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       v_orders_enriched: {
         Row: {
           created_at: string | null
@@ -4111,6 +4516,18 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      v_product_performance: {
+        Row: {
+          avg_price: number | null
+          category_id: string | null
+          category_name: string | null
+          product_id: string | null
+          product_name: string | null
+          qty_sold: number | null
+          revenue_sum: number | null
+        }
+        Relationships: []
       }
       v_sales_daily: {
         Row: {
@@ -4184,6 +4601,10 @@ export type Database = {
         Args: { p_store_id: string }
         Returns: Json
       }
+      get_user_subscription_gate: {
+        Args: { p_user_id: string }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -4203,11 +4624,32 @@ export type Database = {
         }
         Returns: boolean
       }
+      initialize_store_home_sections: {
+        Args: { p_store_id: string; p_store_type?: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "customer" | "admin" | "staff" | "driver" | "owner" | "waiter"
       coupon_type: "percent" | "value" | "free_delivery"
       delivery_type: "delivery" | "pickup" | "table"
+      loyalty_redemption_status:
+        | "reserved"
+        | "applied"
+        | "cancelled"
+        | "consumed"
+      loyalty_reward_type:
+        | "free_shipping"
+        | "free_item"
+        | "discount_amount"
+        | "discount_percent"
+      loyalty_transaction_type:
+        | "earn_pending"
+        | "earn_posted"
+        | "spend"
+        | "expire"
+        | "adjustment"
+        | "refund_reversal"
       notification_type: "order" | "promo" | "system"
       option_type: "size" | "crust" | "extra" | "half_half" | "note"
       order_status:
@@ -4223,7 +4665,16 @@ export type Database = {
         | "served"
       payment_method: "pix" | "card" | "cash"
       payment_status: "pending" | "paid" | "failed" | "refunded"
-      store_role: "owner" | "admin" | "staff"
+      store_role: "owner" | "admin" | "staff" | "driver"
+      store_type:
+        | "pizzaria"
+        | "hamburgueria"
+        | "bebidas"
+        | "sushi"
+        | "acai"
+        | "padaria"
+        | "restaurante"
+        | "generico"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -4354,6 +4805,26 @@ export const Constants = {
       app_role: ["customer", "admin", "staff", "driver", "owner", "waiter"],
       coupon_type: ["percent", "value", "free_delivery"],
       delivery_type: ["delivery", "pickup", "table"],
+      loyalty_redemption_status: [
+        "reserved",
+        "applied",
+        "cancelled",
+        "consumed",
+      ],
+      loyalty_reward_type: [
+        "free_shipping",
+        "free_item",
+        "discount_amount",
+        "discount_percent",
+      ],
+      loyalty_transaction_type: [
+        "earn_pending",
+        "earn_posted",
+        "spend",
+        "expire",
+        "adjustment",
+        "refund_reversal",
+      ],
       notification_type: ["order", "promo", "system"],
       option_type: ["size", "crust", "extra", "half_half", "note"],
       order_status: [
@@ -4370,7 +4841,17 @@ export const Constants = {
       ],
       payment_method: ["pix", "card", "cash"],
       payment_status: ["pending", "paid", "failed", "refunded"],
-      store_role: ["owner", "admin", "staff"],
+      store_role: ["owner", "admin", "staff", "driver"],
+      store_type: [
+        "pizzaria",
+        "hamburgueria",
+        "bebidas",
+        "sushi",
+        "acai",
+        "padaria",
+        "restaurante",
+        "generico",
+      ],
     },
   },
 } as const
