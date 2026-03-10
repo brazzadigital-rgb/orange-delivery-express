@@ -1,5 +1,5 @@
 import { useNavigate, Link } from 'react-router-dom';
-import { Store, ArrowLeft, Home, ExternalLink, Loader2, MapPin, Sparkles, Lock, LogOut, Plus } from 'lucide-react';
+import { Store, ArrowLeft, Home, ExternalLink, Loader2, MapPin, Sparkles, Lock, LogOut, Plus, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
 import { useUserStores } from '@/hooks/useUserStores';
