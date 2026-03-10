@@ -68,33 +68,42 @@ export type Database = {
       app_reviews: {
         Row: {
           admin_reply: string | null
+          app_version: string | null
           comment: string | null
+          contact_allowed: boolean | null
           created_at: string
           id: string
           is_public: boolean | null
           order_id: string | null
+          platform: string | null
           rating: number
           store_id: string
           user_id: string
         }
         Insert: {
           admin_reply?: string | null
+          app_version?: string | null
           comment?: string | null
+          contact_allowed?: boolean | null
           created_at?: string
           id?: string
           is_public?: boolean | null
           order_id?: string | null
+          platform?: string | null
           rating: number
           store_id: string
           user_id: string
         }
         Update: {
           admin_reply?: string | null
+          app_version?: string | null
           comment?: string | null
+          contact_allowed?: boolean | null
           created_at?: string
           id?: string
           is_public?: boolean | null
           order_id?: string | null
+          platform?: string | null
           rating?: number
           store_id?: string
           user_id?: string
@@ -318,6 +327,133 @@ export type Database = {
             foreignKeyName: "banners_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      billing_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string | null
+          gateway_payment_id: string | null
+          id: string
+          method: string | null
+          paid_at: string | null
+          period_end: string | null
+          period_start: string | null
+          status: string | null
+          store_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string | null
+          gateway_payment_id?: string | null
+          id?: string
+          method?: string | null
+          paid_at?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          status?: string | null
+          store_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string | null
+          gateway_payment_id?: string | null
+          id?: string
+          method?: string | null
+          paid_at?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          status?: string | null
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_payments_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      billing_settings: {
+        Row: {
+          created_at: string
+          currency: string | null
+          features_json: Json | null
+          gateway_customer_id: string | null
+          gateway_subscription_id: string | null
+          id: string
+          max_admins: number | null
+          max_drivers: number | null
+          max_orders_month: number | null
+          max_products: number | null
+          monthly_price: number | null
+          next_billing_at: string | null
+          payment_method: string | null
+          plan_name: string | null
+          store_id: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          subscription_status: string | null
+          trial_ends_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string | null
+          features_json?: Json | null
+          gateway_customer_id?: string | null
+          gateway_subscription_id?: string | null
+          id?: string
+          max_admins?: number | null
+          max_drivers?: number | null
+          max_orders_month?: number | null
+          max_products?: number | null
+          monthly_price?: number | null
+          next_billing_at?: string | null
+          payment_method?: string | null
+          plan_name?: string | null
+          store_id: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_status?: string | null
+          trial_ends_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string | null
+          features_json?: Json | null
+          gateway_customer_id?: string | null
+          gateway_subscription_id?: string | null
+          id?: string
+          max_admins?: number | null
+          max_drivers?: number | null
+          max_orders_month?: number | null
+          max_products?: number | null
+          monthly_price?: number | null
+          next_billing_at?: string | null
+          payment_method?: string | null
+          plan_name?: string | null
+          store_id?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_status?: string | null
+          trial_ends_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_settings_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
             referencedRelation: "stores"
             referencedColumns: ["id"]
           },
@@ -2099,6 +2235,56 @@ export type Database = {
           },
         ]
       }
+      store_app_review_settings: {
+        Row: {
+          app_store_url: string | null
+          ask_after_orders: number | null
+          created_at: string
+          enabled: boolean | null
+          id: string
+          min_days_between_reviews: number | null
+          min_rating_for_store: number | null
+          play_store_url: string | null
+          prompt_message: string | null
+          store_id: string
+          updated_at: string
+        }
+        Insert: {
+          app_store_url?: string | null
+          ask_after_orders?: number | null
+          created_at?: string
+          enabled?: boolean | null
+          id?: string
+          min_days_between_reviews?: number | null
+          min_rating_for_store?: number | null
+          play_store_url?: string | null
+          prompt_message?: string | null
+          store_id: string
+          updated_at?: string
+        }
+        Update: {
+          app_store_url?: string | null
+          ask_after_orders?: number | null
+          created_at?: string
+          enabled?: boolean | null
+          id?: string
+          min_days_between_reviews?: number | null
+          min_rating_for_store?: number | null
+          play_store_url?: string | null
+          prompt_message?: string | null
+          store_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_app_review_settings_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       store_features: {
         Row: {
           created_at: string
@@ -2131,9 +2317,52 @@ export type Database = {
           },
         ]
       }
+      store_home_sections: {
+        Row: {
+          config: Json | null
+          created_at: string
+          enabled: boolean | null
+          id: string
+          label: string
+          section_key: string
+          sort_order: number | null
+          store_id: string
+        }
+        Insert: {
+          config?: Json | null
+          created_at?: string
+          enabled?: boolean | null
+          id?: string
+          label: string
+          section_key: string
+          sort_order?: number | null
+          store_id: string
+        }
+        Update: {
+          config?: Json | null
+          created_at?: string
+          enabled?: boolean | null
+          id?: string
+          label?: string
+          section_key?: string
+          sort_order?: number | null
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_home_sections_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       store_loyalty_settings: {
         Row: {
+          allow_partial_redeem_shipping: boolean | null
           auto_credit: boolean | null
+          auto_credit_enabled: boolean | null
           created_at: string
           credit_on_status: string | null
           earning_rate_points_per_real: number | null
@@ -2142,14 +2371,19 @@ export type Database = {
           id: string
           max_discount_pct: number | null
           max_points_per_order: number | null
+          max_points_redeem_per_order: number | null
           min_order_to_earn: number | null
+          points_expire_days: number | null
           program_name: string | null
+          reais_per_point: number | null
           store_id: string
           updated_at: string
           welcome_bonus: number | null
         }
         Insert: {
+          allow_partial_redeem_shipping?: boolean | null
           auto_credit?: boolean | null
+          auto_credit_enabled?: boolean | null
           created_at?: string
           credit_on_status?: string | null
           earning_rate_points_per_real?: number | null
@@ -2158,14 +2392,19 @@ export type Database = {
           id?: string
           max_discount_pct?: number | null
           max_points_per_order?: number | null
+          max_points_redeem_per_order?: number | null
           min_order_to_earn?: number | null
+          points_expire_days?: number | null
           program_name?: string | null
+          reais_per_point?: number | null
           store_id: string
           updated_at?: string
           welcome_bonus?: number | null
         }
         Update: {
+          allow_partial_redeem_shipping?: boolean | null
           auto_credit?: boolean | null
+          auto_credit_enabled?: boolean | null
           created_at?: string
           credit_on_status?: string | null
           earning_rate_points_per_real?: number | null
@@ -2174,8 +2413,11 @@ export type Database = {
           id?: string
           max_discount_pct?: number | null
           max_points_per_order?: number | null
+          max_points_redeem_per_order?: number | null
           min_order_to_earn?: number | null
+          points_expire_days?: number | null
           program_name?: string | null
+          reais_per_point?: number | null
           store_id?: string
           updated_at?: string
           welcome_bonus?: number | null
@@ -2778,9 +3020,33 @@ export type Database = {
           },
         ]
       }
+      v_sales_daily: {
+        Row: {
+          day: string | null
+          delivery_fees: number | null
+          discounts: number | null
+          order_count: number | null
+          revenue: number | null
+          store_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       approve_loyalty_points: { Args: { p_order_id: string }; Returns: boolean }
+      can_submit_review: {
+        Args: { p_store_id: string; p_user_id: string }
+        Returns: boolean
+      }
+      get_billing_gate: { Args: { p_store_id: string }; Returns: Json }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
