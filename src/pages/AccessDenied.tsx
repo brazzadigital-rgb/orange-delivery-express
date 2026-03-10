@@ -186,6 +186,16 @@ export default function AccessDenied() {
                   </div>
                 </div>
 
+                {isGlobalAdmin && (
+                  <button
+                    onClick={() => navigate('/owner')}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-[hsl(28,100%,50%)] to-[hsl(350,80%,55%)] hover:shadow-[0_8px_30px_-5px_hsl(28,100%,50%/0.4)] transition-all duration-300 mb-2"
+                  >
+                    <Shield className="w-4 h-4" />
+                    Painel Owner (Gerenciar Plataforma)
+                  </button>
+                )}
+
                 <button
                   onClick={() => navigate('/onboarding/create-store')}
                   className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-medium text-white/60 hover:text-white border border-dashed border-white/[0.1] hover:border-[hsl(28,100%,50%/0.4)] hover:bg-[hsl(28,100%,50%/0.05)] transition-all duration-300"
