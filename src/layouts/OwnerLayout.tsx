@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Crown, BarChart3, LogOut, Menu, X, UserPlus, CreditCard, Package, ShoppingCart, ToggleRight, Ticket } from 'lucide-react';
+import { Crown, BarChart3, LogOut, Menu, X, UserPlus, CreditCard, Package, ShoppingCart, ToggleRight, Ticket, Globe } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
