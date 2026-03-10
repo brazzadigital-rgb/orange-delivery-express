@@ -1,1 +1,4 @@
 project_id = "krwxkahhhoowsymvjrst"
+
+[functions.create-store]
+verify_jwt = false
