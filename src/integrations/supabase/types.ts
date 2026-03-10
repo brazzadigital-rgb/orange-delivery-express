@@ -65,6 +65,57 @@ export type Database = {
         }
         Relationships: []
       }
+      app_reviews: {
+        Row: {
+          admin_reply: string | null
+          comment: string | null
+          created_at: string
+          id: string
+          is_public: boolean | null
+          order_id: string | null
+          rating: number
+          store_id: string
+          user_id: string
+        }
+        Insert: {
+          admin_reply?: string | null
+          comment?: string | null
+          created_at?: string
+          id?: string
+          is_public?: boolean | null
+          order_id?: string | null
+          rating: number
+          store_id: string
+          user_id: string
+        }
+        Update: {
+          admin_reply?: string | null
+          comment?: string | null
+          created_at?: string
+          id?: string
+          is_public?: boolean | null
+          order_id?: string | null
+          rating?: number
+          store_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "app_reviews_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "app_reviews_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       app_settings: {
         Row: {
           app_description: string | null
@@ -761,6 +812,233 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      loyalty_redemptions: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string | null
+          points_spent: number
+          reward_id: string | null
+          status: string
+          store_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id?: string | null
+          points_spent?: number
+          reward_id?: string | null
+          status?: string
+          store_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string | null
+          points_spent?: number
+          reward_id?: string | null
+          status?: string
+          store_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loyalty_redemptions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loyalty_redemptions_reward_id_fkey"
+            columns: ["reward_id"]
+            isOneToOne: false
+            referencedRelation: "loyalty_rewards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loyalty_redemptions_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      loyalty_rewards: {
+        Row: {
+          active: boolean | null
+          constraints: Json | null
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          points_cost: number
+          sort_order: number | null
+          store_id: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean | null
+          constraints?: Json | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          points_cost?: number
+          sort_order?: number | null
+          store_id: string
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean | null
+          constraints?: Json | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          points_cost?: number
+          sort_order?: number | null
+          store_id?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loyalty_rewards_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      loyalty_transactions: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          meta: Json | null
+          order_id: string | null
+          points: number
+          store_id: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          meta?: Json | null
+          order_id?: string | null
+          points: number
+          store_id: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          meta?: Json | null
+          order_id?: string | null
+          points?: number
+          store_id?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loyalty_transactions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loyalty_transactions_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      loyalty_wallets: {
+        Row: {
+          created_at: string
+          id: string
+          lifetime_earned: number
+          lifetime_spent: number
+          points_balance: number
+          points_pending: number
+          store_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lifetime_earned?: number
+          lifetime_spent?: number
+          points_balance?: number
+          points_pending?: number
+          store_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lifetime_earned?: number
+          lifetime_spent?: number
+          points_balance?: number
+          points_pending?: number
+          store_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loyalty_wallets_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_preferences: {
+        Row: {
+          created_at: string
+          id: string
+          loyalty: boolean | null
+          order_updates: boolean | null
+          promotions: boolean | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          loyalty?: boolean | null
+          order_updates?: boolean | null
+          promotions?: boolean | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          loyalty?: boolean | null
+          order_updates?: boolean | null
+          promotions?: boolean | null
+          user_id?: string
+        }
+        Relationships: []
       }
       notifications: {
         Row: {
@@ -1732,6 +2010,50 @@ export type Database = {
           },
         ]
       }
+      restaurant_tables: {
+        Row: {
+          active: boolean | null
+          capacity: number | null
+          created_at: string
+          id: string
+          label: string | null
+          number: number
+          qr_token: string | null
+          status: string
+          store_id: string
+        }
+        Insert: {
+          active?: boolean | null
+          capacity?: number | null
+          created_at?: string
+          id?: string
+          label?: string | null
+          number: number
+          qr_token?: string | null
+          status?: string
+          store_id: string
+        }
+        Update: {
+          active?: boolean | null
+          capacity?: number | null
+          created_at?: string
+          id?: string
+          label?: string | null
+          number?: number
+          qr_token?: string | null
+          status?: string
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "restaurant_tables_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reviews: {
         Row: {
           comment: string | null
@@ -1772,6 +2094,97 @@ export type Database = {
             foreignKeyName: "reviews_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      store_features: {
+        Row: {
+          created_at: string
+          features: Json
+          id: string
+          store_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          features?: Json
+          id?: string
+          store_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          features?: Json
+          id?: string
+          store_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_features_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      store_loyalty_settings: {
+        Row: {
+          auto_credit: boolean | null
+          created_at: string
+          credit_on_status: string | null
+          earning_rate_points_per_real: number | null
+          enabled: boolean
+          expiry_days: number | null
+          id: string
+          max_discount_pct: number | null
+          max_points_per_order: number | null
+          min_order_to_earn: number | null
+          program_name: string | null
+          store_id: string
+          updated_at: string
+          welcome_bonus: number | null
+        }
+        Insert: {
+          auto_credit?: boolean | null
+          created_at?: string
+          credit_on_status?: string | null
+          earning_rate_points_per_real?: number | null
+          enabled?: boolean
+          expiry_days?: number | null
+          id?: string
+          max_discount_pct?: number | null
+          max_points_per_order?: number | null
+          min_order_to_earn?: number | null
+          program_name?: string | null
+          store_id: string
+          updated_at?: string
+          welcome_bonus?: number | null
+        }
+        Update: {
+          auto_credit?: boolean | null
+          created_at?: string
+          credit_on_status?: string | null
+          earning_rate_points_per_real?: number | null
+          enabled?: boolean
+          expiry_days?: number | null
+          id?: string
+          max_discount_pct?: number | null
+          max_points_per_order?: number | null
+          min_order_to_earn?: number | null
+          program_name?: string | null
+          store_id?: string
+          updated_at?: string
+          welcome_bonus?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_loyalty_settings_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
             referencedRelation: "stores"
             referencedColumns: ["id"]
           },
@@ -2041,6 +2454,7 @@ export type Database = {
           primary_color: string | null
           slug: string | null
           status: string | null
+          store_type: string | null
           updated_at: string
         }
         Insert: {
@@ -2062,6 +2476,7 @@ export type Database = {
           primary_color?: string | null
           slug?: string | null
           status?: string | null
+          store_type?: string | null
           updated_at?: string
         }
         Update: {
@@ -2083,9 +2498,185 @@ export type Database = {
           primary_color?: string | null
           slug?: string | null
           status?: string | null
+          store_type?: string | null
           updated_at?: string
         }
         Relationships: []
+      }
+      table_calls: {
+        Row: {
+          answered_at: string | null
+          answered_by: string | null
+          created_at: string
+          id: string
+          message: string | null
+          session_id: string | null
+          status: string
+          store_id: string
+          table_id: string
+          type: string
+        }
+        Insert: {
+          answered_at?: string | null
+          answered_by?: string | null
+          created_at?: string
+          id?: string
+          message?: string | null
+          session_id?: string | null
+          status?: string
+          store_id: string
+          table_id: string
+          type?: string
+        }
+        Update: {
+          answered_at?: string | null
+          answered_by?: string | null
+          created_at?: string
+          id?: string
+          message?: string | null
+          session_id?: string | null
+          status?: string
+          store_id?: string
+          table_id?: string
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "table_calls_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "table_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "table_calls_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "table_calls_table_id_fkey"
+            columns: ["table_id"]
+            isOneToOne: false
+            referencedRelation: "restaurant_tables"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      table_session_items: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          item_total: number
+          name_snapshot: string
+          options_snapshot: Json | null
+          product_id: string | null
+          quantity: number
+          session_id: string
+          status: string | null
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          item_total: number
+          name_snapshot: string
+          options_snapshot?: Json | null
+          product_id?: string | null
+          quantity?: number
+          session_id: string
+          status?: string | null
+          unit_price: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          item_total?: number
+          name_snapshot?: string
+          options_snapshot?: Json | null
+          product_id?: string | null
+          quantity?: number
+          session_id?: string
+          status?: string | null
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "table_session_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "table_session_items_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "table_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      table_sessions: {
+        Row: {
+          closed_at: string | null
+          closed_by: string | null
+          created_at: string
+          id: string
+          notes: string | null
+          opened_at: string
+          opened_by: string | null
+          status: string
+          store_id: string
+          table_id: string
+          total: number | null
+        }
+        Insert: {
+          closed_at?: string | null
+          closed_by?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          opened_at?: string
+          opened_by?: string | null
+          status?: string
+          store_id: string
+          table_id: string
+          total?: number | null
+        }
+        Update: {
+          closed_at?: string | null
+          closed_by?: string | null
+          created_at?: string
+          id?: string
+          notes?: string | null
+          opened_at?: string
+          opened_by?: string | null
+          status?: string
+          store_id?: string
+          table_id?: string
+          total?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "table_sessions_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "table_sessions_table_id_fkey"
+            columns: ["table_id"]
+            isOneToOne: false
+            referencedRelation: "restaurant_tables"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_notification_preferences: {
         Row: {
@@ -2189,6 +2780,7 @@ export type Database = {
       }
     }
     Functions: {
+      approve_loyalty_points: { Args: { p_order_id: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
