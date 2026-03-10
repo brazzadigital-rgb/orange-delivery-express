@@ -59,6 +59,7 @@ export default function CreateStore() {
   });
 
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
+  const [createdStore, setCreatedStore] = useState<{ slug: string; storeId: string } | null>(null);
 
   const updateField = (field: string, value: string) => {
     setForm(prev => {
