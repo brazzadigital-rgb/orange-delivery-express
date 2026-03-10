@@ -167,6 +167,7 @@ import OwnerPlans from "@/pages/owner/OwnerPlans";
 import OwnerPurchaseOrders from "@/pages/owner/OwnerPurchaseOrders";
 import OwnerStoreFeatures from "@/pages/owner/OwnerStoreFeatures";
 import OwnerVouchers from "@/pages/owner/OwnerVouchers";
+import OwnerPlatformSettings from "@/pages/owner/OwnerPlatformSettings";
   
 // Driver Pages
 import DriverHome from "@/pages/driver/Home";
