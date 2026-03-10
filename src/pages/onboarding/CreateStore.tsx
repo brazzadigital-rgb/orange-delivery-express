@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Store, ArrowRight, ArrowLeft, CheckCircle2, Loader2, LogOut, Sparkles, Lock } from 'lucide-react';
+import { Store, ArrowRight, ArrowLeft, CheckCircle2, Loader2, LogOut, Sparkles, Lock, ExternalLink, LayoutDashboard, Rocket } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import logoWhite from '@/assets/logo-white.png';
 import stepBusinessType from '@/assets/onboarding/step-business-type.jpg';
