@@ -95,14 +95,48 @@ export default function OwnerSubscriptions() {
   const { data: storeBillings, isLoading } = useQuery({
     queryKey: ['owner-store-billings-unified'],
     queryFn: async () => {
-      // 1. Fetch from store_subscriptions (new system)
-      const { data: subs, error: subsError } = await supabase
-        .from('store_subscriptions')
-        .select('*, billing_plans!inner(name, price_monthly), stores!inner(id, name, slug, owner_email, created_at, is_open, phone, created_by)')
-        .order('created_at', { ascending: false });
-      if (subsError) throw subsError;
+      // 1. Try to fetch from store_subscriptions (new system) — non-fatal if table has no FK
+      let fromSubs: StoreBilling[] = [];
+      try {
+        const { data: subs } = await supabase
+          .from('store_subscriptions')
+          .select('*, stores!inner(id, name, slug, owner_email, created_at, is_open, phone, created_by)')
+          .order('created_at', { ascending: false });
 
-      const storeIdsFromSubs = new Set((subs || []).map((s: any) => s.store_id));
+        fromSubs = (subs || []).map((s: any) => ({
+          id: s.id,
+          store_id: s.store_id,
+          plan_name: s.plan_code || s.store_name || '—',
+          monthly_price: s.amount || 0,
+          status: s.status,
+          next_due_date: s.current_period_end,
+          last_payment_date: null,
+          last_payment_amount: null,
+          current_plan_code: s.billing_cycle,
+          current_plan_months: s.plan_months,
+          current_plan_amount: s.amount,
+          current_plan_discount_percent: null,
+          grace_period_days: 2,
+          updated_at: s.updated_at,
+          trial_ends_at: s.trial_ends_at,
+          current_period_end: s.current_period_end,
+          billing_cycle: s.billing_cycle,
+          store: s.stores ? {
+            id: s.stores.id,
+            name: s.stores.name,
+            slug: s.stores.slug,
+            owner_email: s.stores.owner_email,
+            created_at: s.stores.created_at,
+            is_open: s.stores.is_open,
+            phone: s.stores.phone,
+            created_by: s.stores.created_by,
+          } : undefined,
+        }));
+      } catch (e) {
+        console.warn('[OwnerSubscriptions] store_subscriptions query failed, using legacy only', e);
+      }
+
+      const storeIdsFromSubs = new Set(fromSubs.map(s => s.store_id));
 
       // 2. Fetch legacy billing_settings for stores NOT in store_subscriptions
       const { data: legacy, error: legacyError } = await supabase
@@ -110,37 +144,6 @@ export default function OwnerSubscriptions() {
         .select('*, store:store_id(id, name, slug, owner_email, created_at, is_open, phone, created_by)')
         .order('updated_at', { ascending: false });
       if (legacyError) throw legacyError;
-
-      // Map store_subscriptions to StoreBilling format
-      const fromSubs: StoreBilling[] = (subs || []).map((s: any) => ({
-        id: s.id,
-        store_id: s.store_id,
-        plan_name: s.billing_plans?.name || '—',
-        monthly_price: s.billing_plans?.price_monthly || 0,
-        status: s.status,
-        next_due_date: s.current_period_end,
-        last_payment_date: null,
-        last_payment_amount: null,
-        current_plan_code: s.billing_cycle,
-        current_plan_months: null,
-        current_plan_amount: null,
-        current_plan_discount_percent: null,
-        grace_period_days: 2,
-        updated_at: s.updated_at,
-        trial_ends_at: s.trial_ends_at,
-        current_period_end: s.current_period_end,
-        billing_cycle: s.billing_cycle,
-        store: s.stores ? {
-          id: s.stores.id,
-          name: s.stores.name,
-          slug: s.stores.slug,
-          owner_email: s.stores.owner_email,
-          created_at: s.stores.created_at,
-          is_open: s.stores.is_open,
-          phone: s.stores.phone,
-          created_by: s.stores.created_by,
-        } : undefined,
-      }));
 
       // Map legacy billing_settings (only for stores NOT in new system)
       const fromLegacy: StoreBilling[] = (legacy || [])
