@@ -138,45 +138,12 @@ export default function OwnerSubscriptions() {
 
       const storeIdsFromSubs = new Set(fromSubs.map(s => s.store_id));
 
-      const storeIdsFromSubs = new Set((subs || []).map((s: any) => s.store_id));
-
       // 2. Fetch legacy billing_settings for stores NOT in store_subscriptions
       const { data: legacy, error: legacyError } = await supabase
         .from('billing_settings')
         .select('*, store:store_id(id, name, slug, owner_email, created_at, is_open, phone, created_by)')
         .order('updated_at', { ascending: false });
       if (legacyError) throw legacyError;
-
-      // Map store_subscriptions to StoreBilling format
-      const fromSubs: StoreBilling[] = (subs || []).map((s: any) => ({
-        id: s.id,
-        store_id: s.store_id,
-        plan_name: s.billing_plans?.name || '—',
-        monthly_price: s.billing_plans?.price_monthly || 0,
-        status: s.status,
-        next_due_date: s.current_period_end,
-        last_payment_date: null,
-        last_payment_amount: null,
-        current_plan_code: s.billing_cycle,
-        current_plan_months: null,
-        current_plan_amount: null,
-        current_plan_discount_percent: null,
-        grace_period_days: 2,
-        updated_at: s.updated_at,
-        trial_ends_at: s.trial_ends_at,
-        current_period_end: s.current_period_end,
-        billing_cycle: s.billing_cycle,
-        store: s.stores ? {
-          id: s.stores.id,
-          name: s.stores.name,
-          slug: s.stores.slug,
-          owner_email: s.stores.owner_email,
-          created_at: s.stores.created_at,
-          is_open: s.stores.is_open,
-          phone: s.stores.phone,
-          created_by: s.stores.created_by,
-        } : undefined,
-      }));
 
       // Map legacy billing_settings (only for stores NOT in new system)
       const fromLegacy: StoreBilling[] = (legacy || [])
