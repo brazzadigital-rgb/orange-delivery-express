@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    
+    <!-- App Info - NEUTRAL defaults, will be updated dynamically -->
+    <title>Master App</title>
+    <meta name="description" content="Peça agora e receba em casa!">
+    <meta name="author" content="Delivery App" />
+    
+    <!-- PWA Manifest - Dynamic from Edge Function with cache bust -->
+    <link rel="manifest" id="pwa-manifest" crossorigin="anonymous" />
+    <link rel="icon" type="image/png" href="https://rqunxaidjbqmkktutlcg.supabase.co/storage/v1/object/public/app-icons/app_icon_192_url-1770698738551.png">
+    <link rel="apple-touch-icon" id="pwa-apple-icon" sizes="180x180" href="https://rqunxaidjbqmkktutlcg.supabase.co/storage/v1/object/public/app-icons/app_icon_192_url-1770698738551.png" />
+    <script>
+      // Fetch app_settings to get current icon URLs and bust cache
+      (async function() {
+        var _supabaseUrl = 'https://rqunxaidjbqmkktutlcg.supabase.co';
+        var _ts = Date.now();
+        
+        // Manifest - always fresh
+        document.getElementById('pwa-manifest').href = 
+          _supabaseUrl + '/functions/v1/serve-manifest?_=' + _ts;
+        
+        try {
+          var res = await fetch(_supabaseUrl + '/rest/v1/app_settings?select=app_icon_192_url,updated_at&limit=1', {
+            headers: {
+              'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxdW54YWlkamJxbWtrdHV0bGNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNjQ3MjMsImV4cCI6MjA4NTc0MDcyM30.EyNiqcXxObQDGSaDF47BxTfDLD0VHqmGxmnPvzxpBDM',
+              'Accept': 'application/json'
+            }
+          });
+          var data = await res.json();
+          if (data && data[0] && data[0].app_icon_192_url) {
+            var iconUrl = data[0].app_icon_192_url + '?v=' + _ts;
+            document.getElementById('pwa-icon').href = iconUrl;
+            document.getElementById('pwa-apple-icon').href = iconUrl;
+          }
+        } catch(e) {
+          // no fallback - icons come only from admin config
+        }
+      })();
+    </script>
+    
+    <!-- Open Graph - NEUTRAL defaults -->
+    
+    
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/o7S528YgaDdztM9QlHXWuDTBa913/social-images/social-1771629524109-BANNER01.webp">
+    <meta property="og:site_name" content="Delivery" />
+    
+    <!-- Twitter - NEUTRAL defaults -->
+    <meta name="twitter:card" content="summary_large_image" />
+    
+    
+    <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/o7S528YgaDdztM9QlHXWuDTBa913/social-images/social-1771629524109-BANNER01.webp">
+    <meta property="og:title" content="Master App">
+  <meta name="twitter:title" content="Master App">
+  <meta property="og:description" content="Peça agora e receba em casa!">
+  <meta name="twitter:description" content="Peça agora e receba em casa!">
+</head>
+
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

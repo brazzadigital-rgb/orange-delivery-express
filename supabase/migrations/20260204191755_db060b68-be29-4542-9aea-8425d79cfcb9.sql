@@ -1,0 +1,24 @@
+-- Create storage bucket for product images
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('products', 'products', true)
+ON CONFLICT (id) DO NOTHING;
+
+-- Create policy for anyone to view product images
+CREATE POLICY "Anyone can view product images"
+ON storage.objects FOR SELECT
+USING (bucket_id = 'products');
+
+-- Create policy for admins to upload product images
+CREATE POLICY "Admins can upload product images"
+ON storage.objects FOR INSERT
+WITH CHECK (bucket_id = 'products' AND has_role(auth.uid(), 'admin'));
+
+-- Create policy for admins to update product images
+CREATE POLICY "Admins can update product images"
+ON storage.objects FOR UPDATE
+USING (bucket_id = 'products' AND has_role(auth.uid(), 'admin'));
+
+-- Create policy for admins to delete product images
+CREATE POLICY "Admins can delete product images"
+ON storage.objects FOR DELETE
+USING (bucket_id = 'products' AND has_role(auth.uid(), 'admin'));
