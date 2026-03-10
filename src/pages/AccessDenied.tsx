@@ -2,6 +2,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { Store, ArrowLeft, Home, ExternalLink, Loader2, MapPin, Sparkles, Lock, LogOut, Plus, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
+import { useUserRoles } from '@/hooks/useUserRole';
 import { useUserStores } from '@/hooks/useUserStores';
 import { setTenantOverride } from '@/contexts/TenantContext';
 import { clearClientState } from '@/hooks/useAuth';
