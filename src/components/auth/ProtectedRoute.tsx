@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useRef, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useTenant } from '@/contexts/TenantContext';
@@ -28,6 +28,7 @@ export function ProtectedRoute({
   const location = useLocation();
   const [userRole, setUserRole] = useState<AppRole | null>(null);
   const [allUserRoles, setAllUserRoles] = useState<Set<string>>(new Set());
+  const globalRolesRef = useRef<Set<string>>(new Set());
   const [roleLoading, setRoleLoading] = useState(true);
   const [hasStoreAccess, setHasStoreAccess] = useState<boolean | null>(null);
 
@@ -48,12 +49,15 @@ export function ProtectedRoute({
           .select('role')
           .eq('user_id', user.id);
 
+        const globalRoles = new Set<string>();
         if (globalRolesData) {
           globalRolesData.forEach(r => {
             combinedRoles.add(r.role);
+            globalRoles.add(r.role);
             if (r.role === 'owner') hasGlobalOwnerRole = true;
           });
         }
+        globalRolesRef.current = globalRoles;
 
         // Fetch store-level roles (store_users table)
         // But skip mapping for users who have a global 'owner' role
@@ -189,12 +193,16 @@ export function ProtectedRoute({
 
   // Check role permission - check if ANY of the user's roles match allowedRoles
   // Global owners (SaaS super admins) can access admin/staff routes on any store subdomain
+  // Global admins can also access owner routes (they are platform-level super admins)
   const isGlobalOwner = allUserRoles.has('owner');
+  const isGlobalAdmin = allUserRoles.has('admin') && 
+    (globalRolesRef.current?.has('admin') ?? false);
   const hasAllowedRole = allowedRoles.some(role => allUserRoles.has(role)) || 
-    (isGlobalOwner && allowedRoles.some(r => ['admin', 'staff'].includes(r)));
+    (isGlobalOwner && allowedRoles.some(r => ['admin', 'staff'].includes(r))) ||
+    (isGlobalAdmin && allowedRoles.some(r => ['owner', 'admin', 'staff'].includes(r)));
   
   if (allUserRoles.size > 0 && !hasAllowedRole) {
-    if (isGlobalOwner) {
+    if (isGlobalOwner || isGlobalAdmin) {
       const host = window.location.hostname.split(':')[0];
       const PORTAL_BASE_DOMAINS = ['deliverylitoral.com.br'];
       const isPortal = host === 'localhost' || /^\d+\.\d+\.\d+\.\d+$/.test(host) || 

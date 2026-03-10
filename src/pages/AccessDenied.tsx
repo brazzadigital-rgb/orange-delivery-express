@@ -1,7 +1,8 @@
 import { useNavigate, Link } from 'react-router-dom';
-import { Store, ArrowLeft, Home, ExternalLink, Loader2, MapPin, Sparkles, Lock, LogOut, Plus } from 'lucide-react';
+import { Store, ArrowLeft, Home, ExternalLink, Loader2, MapPin, Sparkles, Lock, LogOut, Plus, Shield } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useAuth } from '@/hooks/useAuth';
+import { useUserRoles } from '@/hooks/useUserRole';
 import { useUserStores } from '@/hooks/useUserStores';
 import { setTenantOverride } from '@/contexts/TenantContext';
 import { clearClientState } from '@/hooks/useAuth';
@@ -15,7 +16,9 @@ export default function AccessDenied() {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { data: stores = [], isLoading } = useUserStores();
+  const { data: userRoles = [] } = useUserRoles();
   const queryClient = useQueryClient();
+  const isGlobalAdmin = userRoles.includes('admin') || userRoles.includes('owner');
 
   const handleLogout = async () => {
     await signOut();
@@ -182,6 +185,16 @@ export default function AccessDenied() {
                     <div className="w-full border-t border-white/[0.06]" />
                   </div>
                 </div>
+
+                {isGlobalAdmin && (
+                  <button
+                    onClick={() => navigate('/owner')}
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-[hsl(28,100%,50%)] to-[hsl(350,80%,55%)] hover:shadow-[0_8px_30px_-5px_hsl(28,100%,50%/0.4)] transition-all duration-300 mb-2"
+                  >
+                    <Shield className="w-4 h-4" />
+                    Painel Owner (Gerenciar Plataforma)
+                  </button>
+                )}
 
                 <button
                   onClick={() => navigate('/onboarding/create-store')}
