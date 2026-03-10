@@ -73,7 +73,7 @@ export default function TableSessionOrderStatus() {
       .eq('id', orderId)
       .eq('delivery_type', 'table')
       .maybeSingle();
-    if (!error && data) setOrder(data as OrderData);
+    if (!error && data) setOrder(data as unknown as OrderData);
     setIsLoading(false);
   };
 

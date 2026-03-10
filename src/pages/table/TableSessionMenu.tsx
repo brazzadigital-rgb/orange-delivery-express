@@ -328,8 +328,8 @@ export default function TableSessionMenu() {
       if (error) throw error;
 
       // Recalculate session total
-      const { data: orders } = await supabase
-        .from('orders')
+      const { data: orders } = await (supabase
+        .from('orders') as any)
         .select('total')
         .eq('table_session_id', session.id)
         .neq('status', 'canceled');
