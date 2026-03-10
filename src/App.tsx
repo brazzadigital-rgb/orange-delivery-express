@@ -595,6 +595,7 @@ function AppContent() {
           <Route path="store-features" element={<OwnerStoreFeatures />} />
           <Route path="vouchers" element={<OwnerVouchers />} />
           <Route path="manage-admins" element={<OwnerManageAdmins />} />
+          <Route path="platform" element={<OwnerPlatformSettings />} />
         </Route>
 
         {/* Waiter - Protected */}
