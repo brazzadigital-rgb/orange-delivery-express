@@ -142,6 +142,79 @@ export default function CreateStore() {
     );
   }
 
+  const PLATFORM_DOMAIN = 'deliverylitoral.com.br';
+
+  // Success screen after store creation
+  if (createdStore) {
+    const storeUrl = `https://${createdStore.slug}.${PLATFORM_DOMAIN}`;
+    const adminUrl = `https://${createdStore.slug}.${PLATFORM_DOMAIN}/admin/dashboard`;
+    const isLocalOrPreview = window.location.hostname === 'localhost' || window.location.hostname.includes('lovable');
+
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#07070D] p-4">
+        <div className="relative bg-[#0F0F18]/80 backdrop-blur-xl rounded-2xl p-8 border border-white/[0.06] max-w-md w-full text-center space-y-6 animate-fade-in">
+          <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-[hsl(140,60%,45%)] to-[hsl(160,60%,40%)] flex items-center justify-center">
+            <Rocket className="w-8 h-8 text-white" />
+          </div>
+
+          <div className="space-y-2">
+            <h1 className="text-2xl font-bold text-white">Loja criada com sucesso! 🎉</h1>
+            <p className="text-white/50 text-sm">
+              Sua loja <span className="font-semibold text-[hsl(28,100%,55%)]">{form.name}</span> está pronta.
+            </p>
+          </div>
+
+          <div className="bg-white/[0.04] border border-white/[0.08] rounded-xl p-4 space-y-2">
+            <p className="text-xs text-white/40 uppercase tracking-wider font-semibold">Endereço da sua loja</p>
+            <a
+              href={storeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[hsl(28,100%,55%)] font-medium text-sm hover:underline break-all"
+            >
+              {createdStore.slug}.{PLATFORM_DOMAIN}
+            </a>
+          </div>
+
+          <div className="space-y-3">
+            <Button
+              onClick={() => {
+                if (isLocalOrPreview) {
+                  window.location.href = '/admin/dashboard';
+                } else {
+                  window.location.href = adminUrl;
+                }
+              }}
+              className="w-full h-12 rounded-xl bg-gradient-to-r from-[hsl(28,100%,50%)] to-[hsl(350,80%,55%)] text-white font-semibold border-0 gap-2"
+            >
+              <LayoutDashboard className="w-4 h-4" />
+              Acessar Painel Admin
+            </Button>
+
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (isLocalOrPreview) {
+                  window.location.href = '/app/home';
+                } else {
+                  window.open(storeUrl + '/app/home', '_blank');
+                }
+              }}
+              className="w-full h-12 rounded-xl border-white/[0.1] text-white/70 hover:text-white hover:bg-white/[0.04] gap-2"
+            >
+              <ExternalLink className="w-4 h-4" />
+              Ver Minha Loja (como cliente)
+            </Button>
+          </div>
+
+          <p className="text-xs text-white/30">
+            Você pode personalizar tudo em Configurações do App
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   const selectedType = STORE_TYPES.find(t => t.value === form.store_type);
   const currentStep = STEPS[step];
 
