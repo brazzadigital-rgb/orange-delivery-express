@@ -42,14 +42,17 @@ export default function AppSettings() {
   useEffect(() => {
     supabase
       .from('stores')
-      .select('custom_domain')
+      .select('custom_domain, slug')
       .eq('id', storeId)
       .single()
       .then(({ data }) => {
-        setCustomDomain(data?.custom_domain || '');
+        // If custom_domain is set, use it; otherwise auto-fill with slug.platform
+        const PLATFORM_DOMAIN = 'deliverylitoral.com.br';
+        const domain = data?.custom_domain || (data?.slug ? `${data.slug}.${PLATFORM_DOMAIN}` : '');
+        setCustomDomain(domain);
         setCustomDomainLoaded(true);
       });
-  }, []);
+  }, [storeId]);
 
   const handleSaveDomain = async () => {
     setSavingDomain(true);

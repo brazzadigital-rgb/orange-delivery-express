@@ -79,7 +79,10 @@ Deno.serve(async (req) => {
       });
     }
 
-    // 1. Create the store
+    // Platform base domain for auto-generated subdomains
+    const PLATFORM_DOMAIN = "deliverylitoral.com.br";
+
+    // 1. Create the store with auto-generated custom_domain
     const { data: store, error: storeError } = await admin
       .from("stores")
       .insert({
@@ -92,6 +95,7 @@ Deno.serve(async (req) => {
         plan: "pro",
         created_by: user.id,
         store_type: resolvedType,
+        custom_domain: `${slug}.${PLATFORM_DOMAIN}`,
       })
       .select("id, slug")
       .single();

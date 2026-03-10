@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Store, ArrowRight, ArrowLeft, CheckCircle2, Loader2, LogOut, Sparkles, Lock } from 'lucide-react';
+import { Store, ArrowRight, ArrowLeft, CheckCircle2, Loader2, LogOut, Sparkles, Lock, ExternalLink, LayoutDashboard, Rocket } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import logoWhite from '@/assets/logo-white.png';
 import stepBusinessType from '@/assets/onboarding/step-business-type.jpg';
@@ -59,6 +59,7 @@ export default function CreateStore() {
   });
 
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
+  const [createdStore, setCreatedStore] = useState<{ slug: string; storeId: string } | null>(null);
 
   const updateField = (field: string, value: string) => {
     setForm(prev => {
@@ -105,21 +106,7 @@ export default function CreateStore() {
       toast.success('Loja criada com sucesso! 🎉');
 
       setTenantOverride(result.store_id);
-
-      const redirect = searchParams.get('redirect');
-      if (redirect) {
-        window.location.href = redirect;
-      } else {
-        const hostname = window.location.hostname;
-        if (hostname === 'localhost' || hostname.includes('lovable')) {
-          window.location.href = '/admin/dashboard';
-        } else {
-          const parts = hostname.split('.');
-          const isCcTld = parts.length >= 3 && parts[parts.length - 2].length <= 3 && parts[parts.length - 1].length <= 3;
-          const baseDomain = isCcTld ? parts.slice(-3).join('.') : parts.slice(-2).join('.');
-          window.location.href = `https://${result.slug}.${baseDomain}/admin/dashboard`;
-        }
-      }
+      setCreatedStore({ slug: result.slug, storeId: result.store_id });
     } catch (err: any) {
       console.error('Create store error:', err);
       toast.error(err.message || 'Erro ao criar loja');
@@ -150,6 +137,79 @@ export default function CreateStore() {
           >
             Fazer Login
           </Button>
+        </div>
+      </div>
+    );
+  }
+
+  const PLATFORM_DOMAIN = 'deliverylitoral.com.br';
+
+  // Success screen after store creation
+  if (createdStore) {
+    const storeUrl = `https://${createdStore.slug}.${PLATFORM_DOMAIN}`;
+    const adminUrl = `https://${createdStore.slug}.${PLATFORM_DOMAIN}/admin/dashboard`;
+    const isLocalOrPreview = window.location.hostname === 'localhost' || window.location.hostname.includes('lovable');
+
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#07070D] p-4">
+        <div className="relative bg-[#0F0F18]/80 backdrop-blur-xl rounded-2xl p-8 border border-white/[0.06] max-w-md w-full text-center space-y-6 animate-fade-in">
+          <div className="w-16 h-16 mx-auto rounded-full bg-gradient-to-br from-[hsl(140,60%,45%)] to-[hsl(160,60%,40%)] flex items-center justify-center">
+            <Rocket className="w-8 h-8 text-white" />
+          </div>
+
+          <div className="space-y-2">
+            <h1 className="text-2xl font-bold text-white">Loja criada com sucesso! 🎉</h1>
+            <p className="text-white/50 text-sm">
+              Sua loja <span className="font-semibold text-[hsl(28,100%,55%)]">{form.name}</span> está pronta.
+            </p>
+          </div>
+
+          <div className="bg-white/[0.04] border border-white/[0.08] rounded-xl p-4 space-y-2">
+            <p className="text-xs text-white/40 uppercase tracking-wider font-semibold">Endereço da sua loja</p>
+            <a
+              href={storeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-[hsl(28,100%,55%)] font-medium text-sm hover:underline break-all"
+            >
+              {createdStore.slug}.{PLATFORM_DOMAIN}
+            </a>
+          </div>
+
+          <div className="space-y-3">
+            <Button
+              onClick={() => {
+                if (isLocalOrPreview) {
+                  window.location.href = '/admin/dashboard';
+                } else {
+                  window.location.href = adminUrl;
+                }
+              }}
+              className="w-full h-12 rounded-xl bg-gradient-to-r from-[hsl(28,100%,50%)] to-[hsl(350,80%,55%)] text-white font-semibold border-0 gap-2"
+            >
+              <LayoutDashboard className="w-4 h-4" />
+              Acessar Painel Admin
+            </Button>
+
+            <Button
+              variant="outline"
+              onClick={() => {
+                if (isLocalOrPreview) {
+                  window.location.href = '/app/home';
+                } else {
+                  window.open(storeUrl + '/app/home', '_blank');
+                }
+              }}
+              className="w-full h-12 rounded-xl border-white/[0.1] text-white/70 hover:text-white hover:bg-white/[0.04] gap-2"
+            >
+              <ExternalLink className="w-4 h-4" />
+              Ver Minha Loja (como cliente)
+            </Button>
+          </div>
+
+          <p className="text-xs text-white/30">
+            Você pode personalizar tudo em Configurações do App
+          </p>
         </div>
       </div>
     );
@@ -310,7 +370,7 @@ export default function CreateStore() {
                       className="h-12 bg-white/[0.04] border-white/[0.08] text-white placeholder:text-white/25 rounded-xl focus-visible:ring-2 focus-visible:ring-[hsl(28,100%,50%/0.4)] focus-visible:ring-offset-0 focus-visible:border-white/[0.15] transition-all duration-300"
                     />
                     <p className="text-xs text-white/30 mt-1">
-                      Sua loja ficará em: <span className="font-medium text-[hsl(28,100%,55%)]">{form.slug || '...'}.seudominio.com.br</span>
+                      Sua loja ficará em: <span className="font-medium text-[hsl(28,100%,55%)]">{form.slug || '...'}.deliverylitoral.com.br</span>
                     </p>
                   </div>
                 </div>
