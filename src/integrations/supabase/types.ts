@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_deletion_requests: {
+        Row: {
+          created_at: string
+          id: string
+          processed_at: string | null
+          reason: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          processed_at?: string | null
+          reason?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          processed_at?: string | null
+          reason?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       addresses: {
         Row: {
           city: string
@@ -2915,10 +2942,149 @@ export type Database = {
         }
         Relationships: []
       }
+      subscription_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string | null
+          gateway_payment_id: string | null
+          id: string
+          method: string | null
+          paid_at: string | null
+          period_end: string | null
+          period_start: string | null
+          status: string | null
+          store_id: string
+          subscription_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string | null
+          gateway_payment_id?: string | null
+          id?: string
+          method?: string | null
+          paid_at?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          status?: string | null
+          store_id: string
+          subscription_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string | null
+          gateway_payment_id?: string | null
+          id?: string
+          method?: string | null
+          paid_at?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          status?: string | null
+          store_id?: string
+          subscription_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscription_payments_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscription_payments_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscriptions: {
+        Row: {
+          base_monthly_price: number | null
+          cancel_at: string | null
+          canceled_at: string | null
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          discount_percent: number | null
+          final_monthly_price: number | null
+          gateway: string | null
+          gateway_customer_id: string | null
+          gateway_subscription_id: string | null
+          id: string
+          mp_init_point: string | null
+          mp_preapproval_id: string | null
+          plan_code: string
+          plan_months: number | null
+          status: string
+          store_id: string
+          trial_ends_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          base_monthly_price?: number | null
+          cancel_at?: string | null
+          canceled_at?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          discount_percent?: number | null
+          final_monthly_price?: number | null
+          gateway?: string | null
+          gateway_customer_id?: string | null
+          gateway_subscription_id?: string | null
+          id?: string
+          mp_init_point?: string | null
+          mp_preapproval_id?: string | null
+          plan_code?: string
+          plan_months?: number | null
+          status?: string
+          store_id: string
+          trial_ends_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          base_monthly_price?: number | null
+          cancel_at?: string | null
+          canceled_at?: string | null
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          discount_percent?: number | null
+          final_monthly_price?: number | null
+          gateway?: string | null
+          gateway_customer_id?: string | null
+          gateway_subscription_id?: string | null
+          id?: string
+          mp_init_point?: string | null
+          mp_preapproval_id?: string | null
+          plan_code?: string
+          plan_months?: number | null
+          status?: string
+          store_id?: string
+          trial_ends_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       table_calls: {
         Row: {
           answered_at: string | null
           answered_by: string | null
+          attended_at: string | null
+          attended_by_user_id: string | null
           created_at: string
           id: string
           message: string | null
@@ -2926,11 +3092,15 @@ export type Database = {
           status: string
           store_id: string
           table_id: string
+          table_number: number | null
+          table_session_id: string | null
           type: string
         }
         Insert: {
           answered_at?: string | null
           answered_by?: string | null
+          attended_at?: string | null
+          attended_by_user_id?: string | null
           created_at?: string
           id?: string
           message?: string | null
@@ -2938,11 +3108,15 @@ export type Database = {
           status?: string
           store_id: string
           table_id: string
+          table_number?: number | null
+          table_session_id?: string | null
           type?: string
         }
         Update: {
           answered_at?: string | null
           answered_by?: string | null
+          attended_at?: string | null
+          attended_by_user_id?: string | null
           created_at?: string
           id?: string
           message?: string | null
@@ -2950,6 +3124,8 @@ export type Database = {
           status?: string
           store_id?: string
           table_id?: string
+          table_number?: number | null
+          table_session_id?: string | null
           type?: string
         }
         Relationships: [
@@ -2972,6 +3148,13 @@ export type Database = {
             columns: ["table_id"]
             isOneToOne: false
             referencedRelation: "restaurant_tables"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "table_calls_table_session_id_fkey"
+            columns: ["table_session_id"]
+            isOneToOne: false
+            referencedRelation: "table_sessions"
             referencedColumns: ["id"]
           },
         ]
@@ -3039,6 +3222,7 @@ export type Database = {
           closed_by: string | null
           created_at: string
           id: string
+          last_call_at: string | null
           notes: string | null
           opened_at: string
           opened_by: string | null
@@ -3052,6 +3236,7 @@ export type Database = {
           closed_by?: string | null
           created_at?: string
           id?: string
+          last_call_at?: string | null
           notes?: string | null
           opened_at?: string
           opened_by?: string | null
@@ -3065,6 +3250,7 @@ export type Database = {
           closed_by?: string | null
           created_at?: string
           id?: string
+          last_call_at?: string | null
           notes?: string | null
           opened_at?: string
           opened_by?: string | null
@@ -3136,6 +3322,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      user_privacy_settings: {
+        Row: {
+          allow_promotional_contact: boolean | null
+          created_at: string
+          id: string
+          share_location_during_delivery: boolean | null
+          show_name_to_store: boolean | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          allow_promotional_contact?: boolean | null
+          created_at?: string
+          id?: string
+          share_location_during_delivery?: boolean | null
+          show_name_to_store?: boolean | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          allow_promotional_contact?: boolean | null
+          created_at?: string
+          id?: string
+          share_location_during_delivery?: boolean | null
+          show_name_to_store?: boolean | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       user_roles: {
         Row: {
@@ -3280,6 +3496,11 @@ export type Database = {
         Returns: boolean
       }
       get_billing_gate: { Args: { p_store_id: string }; Returns: Json }
+      get_store_current_usage: { Args: { p_store_id: string }; Returns: Json }
+      get_store_plan_entitlements: {
+        Args: { p_store_id: string }
+        Returns: Json
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
