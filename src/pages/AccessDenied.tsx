@@ -16,7 +16,9 @@ export default function AccessDenied() {
   const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const { data: stores = [], isLoading } = useUserStores();
+  const { data: userRoles = [] } = useUserRoles();
   const queryClient = useQueryClient();
+  const isGlobalAdmin = userRoles.includes('admin') || userRoles.includes('owner');
 
   const handleLogout = async () => {
     await signOut();
