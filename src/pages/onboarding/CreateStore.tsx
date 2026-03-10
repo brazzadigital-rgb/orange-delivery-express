@@ -106,21 +106,7 @@ export default function CreateStore() {
       toast.success('Loja criada com sucesso! 🎉');
 
       setTenantOverride(result.store_id);
-
-      const redirect = searchParams.get('redirect');
-      if (redirect) {
-        window.location.href = redirect;
-      } else {
-        const hostname = window.location.hostname;
-        if (hostname === 'localhost' || hostname.includes('lovable')) {
-          window.location.href = '/admin/dashboard';
-        } else {
-          const parts = hostname.split('.');
-          const isCcTld = parts.length >= 3 && parts[parts.length - 2].length <= 3 && parts[parts.length - 1].length <= 3;
-          const baseDomain = isCcTld ? parts.slice(-3).join('.') : parts.slice(-2).join('.');
-          window.location.href = `https://${result.slug}.${baseDomain}/admin/dashboard`;
-        }
-      }
+      setCreatedStore({ slug: result.slug, storeId: result.store_id });
     } catch (err: any) {
       console.error('Create store error:', err);
       toast.error(err.message || 'Erro ao criar loja');
