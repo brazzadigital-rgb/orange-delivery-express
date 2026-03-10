@@ -33,7 +33,15 @@ export function computeBillingGate(settings: BillingSettings | null): BillingGat
 
   if (status === 'suspended' || last_mp_status === 'cancelled') return 'blocked';
   if (status === 'pending') return 'blocked';
-  if (status === 'trial' || status === 'trialing') return 'open';
+  if (status === 'trial' || status === 'trialing') {
+    // Check if trial has expired
+    if (next_due_date) {
+      const now = new Date();
+      const due = new Date(next_due_date);
+      if (now > due) return 'blocked';
+    }
+    return 'open';
+  }
 
   if (status === 'active') {
     if (next_due_date) {
