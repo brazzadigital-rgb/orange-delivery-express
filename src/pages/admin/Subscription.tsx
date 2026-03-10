@@ -277,7 +277,7 @@ export default function AdminSubscription() {
             </div>
             <div className="min-w-0">
               <h2 className="font-bold text-lg truncate">
-                {isFreePlan ? 'Plano Gratuito' : (currentPlan?.name || billingSettings?.plan_name || 'Sem plano')}
+                {isTrial ? 'Teste Grátis (7 dias)' : isFreePlan ? 'Plano Gratuito' : (currentPlan?.name || billingSettings?.plan_name || 'Sem plano')}
               </h2>
               <p className="text-xs text-muted-foreground">Plano atual da sua loja</p>
             </div>
