@@ -33,7 +33,7 @@ serve(async (req) => {
     }
 
     // Get the API key from secrets
-    const mapsApiKey = Deno.env.get('GOOGLE_MAPS_API_KEY');
+    const mapsApiKey = Deno.env.get('GOOGLE_MAPS_KEY');
     
     if (!mapsApiKey) {
       return new Response(
