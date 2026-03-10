@@ -418,6 +418,7 @@ export type Database = {
       }
       billing_plans: {
         Row: {
+          active: boolean | null
           annual_price: number | null
           code: string
           created_at: string
@@ -425,15 +426,27 @@ export type Database = {
           features: Json | null
           id: string
           is_active: boolean | null
+          is_default: boolean | null
           max_admins: number | null
+          max_banners: number | null
+          max_coupons: number | null
+          max_delivery_zones: number | null
           max_drivers: number | null
           max_orders_month: number | null
+          max_orders_per_month: number | null
           max_products: number | null
+          max_promotions: number | null
+          max_tables: number | null
+          max_waiters: number | null
           monthly_price: number | null
           name: string
+          price_monthly: number | null
+          price_yearly: number | null
+          slug: string | null
           sort_order: number | null
         }
         Insert: {
+          active?: boolean | null
           annual_price?: number | null
           code: string
           created_at?: string
@@ -441,15 +454,27 @@ export type Database = {
           features?: Json | null
           id?: string
           is_active?: boolean | null
+          is_default?: boolean | null
           max_admins?: number | null
+          max_banners?: number | null
+          max_coupons?: number | null
+          max_delivery_zones?: number | null
           max_drivers?: number | null
           max_orders_month?: number | null
+          max_orders_per_month?: number | null
           max_products?: number | null
+          max_promotions?: number | null
+          max_tables?: number | null
+          max_waiters?: number | null
           monthly_price?: number | null
           name: string
+          price_monthly?: number | null
+          price_yearly?: number | null
+          slug?: string | null
           sort_order?: number | null
         }
         Update: {
+          active?: boolean | null
           annual_price?: number | null
           code?: string
           created_at?: string
@@ -457,12 +482,23 @@ export type Database = {
           features?: Json | null
           id?: string
           is_active?: boolean | null
+          is_default?: boolean | null
           max_admins?: number | null
+          max_banners?: number | null
+          max_coupons?: number | null
+          max_delivery_zones?: number | null
           max_drivers?: number | null
           max_orders_month?: number | null
+          max_orders_per_month?: number | null
           max_products?: number | null
+          max_promotions?: number | null
+          max_tables?: number | null
+          max_waiters?: number | null
           monthly_price?: number | null
           name?: string
+          price_monthly?: number | null
+          price_yearly?: number | null
+          slug?: string | null
           sort_order?: number | null
         }
         Relationships: []
@@ -906,6 +942,50 @@ export type Database = {
             columns: ["order_id"]
             isOneToOne: false
             referencedRelation: "v_orders_enriched"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      drivers: {
+        Row: {
+          active: boolean | null
+          created_at: string
+          id: string
+          license_plate: string | null
+          name: string | null
+          phone: string | null
+          store_id: string
+          user_id: string
+          vehicle_type: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string
+          id?: string
+          license_plate?: string | null
+          name?: string | null
+          phone?: string | null
+          store_id: string
+          user_id: string
+          vehicle_type?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string
+          id?: string
+          license_plate?: string | null
+          name?: string | null
+          phone?: string | null
+          store_id?: string
+          user_id?: string
+          vehicle_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "drivers_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
             referencedColumns: ["id"]
           },
         ]
@@ -1812,6 +1892,59 @@ export type Database = {
           },
         ]
       }
+      payment_settings: {
+        Row: {
+          cash_enabled: boolean | null
+          created_at: string
+          credit_card_enabled: boolean | null
+          debit_card_enabled: boolean | null
+          id: string
+          mp_enabled: boolean | null
+          pix_enabled: boolean | null
+          pix_key: string | null
+          pix_name: string | null
+          store_id: string
+          stripe_enabled: boolean | null
+          updated_at: string
+        }
+        Insert: {
+          cash_enabled?: boolean | null
+          created_at?: string
+          credit_card_enabled?: boolean | null
+          debit_card_enabled?: boolean | null
+          id?: string
+          mp_enabled?: boolean | null
+          pix_enabled?: boolean | null
+          pix_key?: string | null
+          pix_name?: string | null
+          store_id: string
+          stripe_enabled?: boolean | null
+          updated_at?: string
+        }
+        Update: {
+          cash_enabled?: boolean | null
+          created_at?: string
+          credit_card_enabled?: boolean | null
+          debit_card_enabled?: boolean | null
+          id?: string
+          mp_enabled?: boolean | null
+          pix_enabled?: boolean | null
+          pix_key?: string | null
+          pix_name?: string | null
+          store_id?: string
+          stripe_enabled?: boolean | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_settings_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pizza_addon_groups: {
         Row: {
           active: boolean | null
@@ -2299,6 +2432,80 @@ export type Database = {
           },
         ]
       }
+      purchase_orders: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string | null
+          customer_email: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          efi_e2eid: string | null
+          efi_expiration: string | null
+          efi_qrcode: string | null
+          efi_qrcode_image: string | null
+          efi_txid: string | null
+          id: string
+          paid_at: string | null
+          plan_code: string | null
+          plan_months: number | null
+          status: string | null
+          store_id: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          efi_e2eid?: string | null
+          efi_expiration?: string | null
+          efi_qrcode?: string | null
+          efi_qrcode_image?: string | null
+          efi_txid?: string | null
+          id?: string
+          paid_at?: string | null
+          plan_code?: string | null
+          plan_months?: number | null
+          status?: string | null
+          store_id: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          efi_e2eid?: string | null
+          efi_expiration?: string | null
+          efi_qrcode?: string | null
+          efi_qrcode_image?: string | null
+          efi_txid?: string | null
+          id?: string
+          paid_at?: string | null
+          plan_code?: string | null
+          plan_months?: number | null
+          status?: string | null
+          store_id?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_orders_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       push_delivery_logs: {
         Row: {
           created_at: string
@@ -2478,6 +2685,47 @@ export type Database = {
             foreignKeyName: "reviews_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      store_admin_settings: {
+        Row: {
+          auto_accept_orders: boolean | null
+          created_at: string
+          default_prep_time: number | null
+          id: string
+          order_alert_sound: string | null
+          order_alert_volume: number | null
+          store_id: string
+          updated_at: string
+        }
+        Insert: {
+          auto_accept_orders?: boolean | null
+          created_at?: string
+          default_prep_time?: number | null
+          id?: string
+          order_alert_sound?: string | null
+          order_alert_volume?: number | null
+          store_id: string
+          updated_at?: string
+        }
+        Update: {
+          auto_accept_orders?: boolean | null
+          created_at?: string
+          default_prep_time?: number | null
+          id?: string
+          order_alert_sound?: string | null
+          order_alert_volume?: number | null
+          store_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_admin_settings_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
             referencedRelation: "stores"
             referencedColumns: ["id"]
           },
@@ -2884,6 +3132,65 @@ export type Database = {
           },
         ]
       }
+      store_subscriptions: {
+        Row: {
+          amount: number | null
+          created_at: string
+          currency: string | null
+          current_period_end: string | null
+          current_period_start: string | null
+          gateway: string | null
+          gateway_subscription_id: string | null
+          id: string
+          plan_code: string
+          plan_months: number | null
+          status: string
+          store_id: string
+          trial_ends_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount?: number | null
+          created_at?: string
+          currency?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          gateway?: string | null
+          gateway_subscription_id?: string | null
+          id?: string
+          plan_code?: string
+          plan_months?: number | null
+          status?: string
+          store_id: string
+          trial_ends_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number | null
+          created_at?: string
+          currency?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          gateway?: string | null
+          gateway_subscription_id?: string | null
+          id?: string
+          plan_code?: string
+          plan_months?: number | null
+          status?: string
+          store_id?: string
+          trial_ends_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_subscriptions_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       store_users: {
         Row: {
           accepted_at: string | null
@@ -3082,6 +3389,7 @@ export type Database = {
           last_mp_status: string | null
           last_payment_amount: number | null
           last_payment_at: string | null
+          last_payment_date: string | null
           mp_init_point: string | null
           mp_payer_email: string | null
           mp_preapproval_id: string | null
@@ -3113,6 +3421,7 @@ export type Database = {
           last_mp_status?: string | null
           last_payment_amount?: number | null
           last_payment_at?: string | null
+          last_payment_date?: string | null
           mp_init_point?: string | null
           mp_payer_email?: string | null
           mp_preapproval_id?: string | null
@@ -3144,6 +3453,7 @@ export type Database = {
           last_mp_status?: string | null
           last_payment_amount?: number | null
           last_payment_at?: string | null
+          last_payment_date?: string | null
           mp_init_point?: string | null
           mp_payer_email?: string | null
           mp_preapproval_id?: string | null
@@ -3480,6 +3790,45 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      vouchers: {
+        Row: {
+          active: boolean | null
+          code: string
+          created_at: string
+          discount_percent: number | null
+          expires_at: string | null
+          id: string
+          max_uses: number | null
+          plan_code: string | null
+          plan_months: number | null
+          used_count: number | null
+        }
+        Insert: {
+          active?: boolean | null
+          code: string
+          created_at?: string
+          discount_percent?: number | null
+          expires_at?: string | null
+          id?: string
+          max_uses?: number | null
+          plan_code?: string | null
+          plan_months?: number | null
+          used_count?: number | null
+        }
+        Update: {
+          active?: boolean | null
+          code?: string
+          created_at?: string
+          discount_percent?: number | null
+          expires_at?: string | null
+          id?: string
+          max_uses?: number | null
+          plan_code?: string | null
+          plan_months?: number | null
+          used_count?: number | null
+        }
+        Relationships: []
       }
       waiter_assignments: {
         Row: {
