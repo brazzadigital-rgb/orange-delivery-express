@@ -117,6 +117,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "app_reviews_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "v_orders_enriched"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "app_reviews_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: false
@@ -386,18 +393,31 @@ export type Database = {
         Row: {
           created_at: string
           currency: string | null
+          current_plan_amount: number | null
+          current_plan_code: string | null
+          current_plan_discount_percent: number | null
+          current_plan_months: number | null
           features_json: Json | null
           gateway_customer_id: string | null
           gateway_subscription_id: string | null
+          grace_period_days: number | null
           id: string
+          last_mp_status: string | null
+          last_payment_amount: number | null
+          last_payment_date: string | null
           max_admins: number | null
           max_drivers: number | null
           max_orders_month: number | null
           max_products: number | null
           monthly_price: number | null
+          mp_init_point: string | null
+          mp_payer_email: string | null
+          mp_preapproval_id: string | null
           next_billing_at: string | null
+          next_due_date: string | null
           payment_method: string | null
           plan_name: string | null
+          status: string | null
           store_id: string
           stripe_customer_id: string | null
           stripe_subscription_id: string | null
@@ -408,18 +428,31 @@ export type Database = {
         Insert: {
           created_at?: string
           currency?: string | null
+          current_plan_amount?: number | null
+          current_plan_code?: string | null
+          current_plan_discount_percent?: number | null
+          current_plan_months?: number | null
           features_json?: Json | null
           gateway_customer_id?: string | null
           gateway_subscription_id?: string | null
+          grace_period_days?: number | null
           id?: string
+          last_mp_status?: string | null
+          last_payment_amount?: number | null
+          last_payment_date?: string | null
           max_admins?: number | null
           max_drivers?: number | null
           max_orders_month?: number | null
           max_products?: number | null
           monthly_price?: number | null
+          mp_init_point?: string | null
+          mp_payer_email?: string | null
+          mp_preapproval_id?: string | null
           next_billing_at?: string | null
+          next_due_date?: string | null
           payment_method?: string | null
           plan_name?: string | null
+          status?: string | null
           store_id: string
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
@@ -430,18 +463,31 @@ export type Database = {
         Update: {
           created_at?: string
           currency?: string | null
+          current_plan_amount?: number | null
+          current_plan_code?: string | null
+          current_plan_discount_percent?: number | null
+          current_plan_months?: number | null
           features_json?: Json | null
           gateway_customer_id?: string | null
           gateway_subscription_id?: string | null
+          grace_period_days?: number | null
           id?: string
+          last_mp_status?: string | null
+          last_payment_amount?: number | null
+          last_payment_date?: string | null
           max_admins?: number | null
           max_drivers?: number | null
           max_orders_month?: number | null
           max_products?: number | null
           monthly_price?: number | null
+          mp_init_point?: string | null
+          mp_payer_email?: string | null
+          mp_preapproval_id?: string | null
           next_billing_at?: string | null
+          next_due_date?: string | null
           payment_method?: string | null
           plan_name?: string | null
+          status?: string | null
           store_id?: string
           stripe_customer_id?: string | null
           stripe_subscription_id?: string | null
@@ -777,6 +823,13 @@ export type Database = {
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "driver_locations_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "v_orders_enriched"
+            referencedColumns: ["id"]
+          },
         ]
       }
       favorites: {
@@ -989,6 +1042,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "loyalty_redemptions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "v_orders_enriched"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "loyalty_redemptions_reward_id_fkey"
             columns: ["reward_id"]
             isOneToOne: false
@@ -1097,6 +1157,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "loyalty_transactions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "v_orders_enriched"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "loyalty_transactions_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: false
@@ -1145,6 +1212,58 @@ export type Database = {
             columns: ["store_id"]
             isOneToOne: false
             referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      merged_tables: {
+        Row: {
+          created_at: string
+          id: string
+          master_session_id: string
+          merged_from_session_id: string | null
+          status: string
+          table_id: string
+          table_number: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          master_session_id: string
+          merged_from_session_id?: string | null
+          status?: string
+          table_id: string
+          table_number: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          master_session_id?: string
+          merged_from_session_id?: string | null
+          status?: string
+          table_id?: string
+          table_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "merged_tables_master_session_id_fkey"
+            columns: ["master_session_id"]
+            isOneToOne: false
+            referencedRelation: "table_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "merged_tables_merged_from_session_id_fkey"
+            columns: ["merged_from_session_id"]
+            isOneToOne: false
+            referencedRelation: "table_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "merged_tables_table_id_fkey"
+            columns: ["table_id"]
+            isOneToOne: false
+            referencedRelation: "restaurant_tables"
             referencedColumns: ["id"]
           },
         ]
@@ -1242,6 +1361,13 @@ export type Database = {
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "order_events_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "v_orders_enriched"
+            referencedColumns: ["id"]
+          },
         ]
       }
       order_items: {
@@ -1284,6 +1410,13 @@ export type Database = {
             columns: ["order_id"]
             isOneToOne: false
             referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "v_orders_enriched"
             referencedColumns: ["id"]
           },
           {
@@ -1344,6 +1477,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "order_print_jobs_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "v_orders_enriched"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "order_print_jobs_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: false
@@ -1386,6 +1526,13 @@ export type Database = {
             columns: ["order_id"]
             isOneToOne: false
             referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_status_history_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "v_orders_enriched"
             referencedColumns: ["id"]
           },
         ]
@@ -1576,6 +1723,13 @@ export type Database = {
             columns: ["order_id"]
             isOneToOne: false
             referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_intents_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "v_orders_enriched"
             referencedColumns: ["id"]
           },
         ]
@@ -2227,6 +2381,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "reviews_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "v_orders_enriched"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "reviews_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: false
@@ -2246,7 +2407,10 @@ export type Database = {
           min_rating_for_store: number | null
           play_store_url: string | null
           prompt_message: string | null
+          review_prompt_subtitle: string | null
+          review_prompt_title: string | null
           store_id: string
+          thank_you_message: string | null
           updated_at: string
         }
         Insert: {
@@ -2259,7 +2423,10 @@ export type Database = {
           min_rating_for_store?: number | null
           play_store_url?: string | null
           prompt_message?: string | null
+          review_prompt_subtitle?: string | null
+          review_prompt_title?: string | null
           store_id: string
+          thank_you_message?: string | null
           updated_at?: string
         }
         Update: {
@@ -2272,7 +2439,10 @@ export type Database = {
           min_rating_for_store?: number | null
           play_store_url?: string | null
           prompt_message?: string | null
+          review_prompt_subtitle?: string | null
+          review_prompt_title?: string | null
           store_id?: string
+          thank_you_message?: string | null
           updated_at?: string
         }
         Relationships: [
@@ -3018,15 +3188,78 @@ export type Database = {
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "driver_locations_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "v_orders_enriched"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_orders_enriched: {
+        Row: {
+          created_at: string | null
+          customer_name: string | null
+          delivery_time_min: number | null
+          id: string | null
+          order_number: number | null
+          payment_method: string | null
+          payment_status: string | null
+          prep_time_min: number | null
+          status: string | null
+          store_id: string | null
+          time_to_accept_min: number | null
+          total: number | null
+          total_cycle_time_min: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
         ]
       }
       v_sales_daily: {
         Row: {
+          aov: number | null
+          cancel_rate: number | null
+          date: string | null
           day: string | null
+          delivery_fee_sum: number | null
           delivery_fees: number | null
+          delivery_share: number | null
           discounts: number | null
+          discounts_sum: number | null
+          gross_revenue: number | null
+          net_revenue: number | null
           order_count: number | null
+          orders_count: number | null
+          paid_rate: number | null
+          pickup_share: number | null
           revenue: number | null
+          store_id: string | null
+          table_share: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_sales_hourly: {
+        Row: {
+          aov: number | null
+          gross_revenue: number | null
+          hour: number | null
+          orders_count: number | null
           store_id: string | null
         }
         Relationships: [
