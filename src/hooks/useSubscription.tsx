@@ -87,8 +87,8 @@ export function useMySubscriptionPayments() {
     queryKey: ['my-subscription-payments', user?.id],
     queryFn: async () => {
       if (!user?.id) return [];
-      const { data, error } = await supabase
-        .from('subscription_payments')
+      const { data, error } = await (supabase
+        .from('subscription_payments') as any)
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })

@@ -146,7 +146,7 @@ export default function AdminWaiters() {
               {(a as any).restaurant_tables && (
                 <span className="ml-2 text-muted-foreground">→ Mesa {(a as any).restaurant_tables.number}</span>
               )}
-              {a.area && <span className="ml-2 text-muted-foreground">→ {a.area}</span>}
+              {(a as any).area && <span className="ml-2 text-muted-foreground">→ {(a as any).area}</span>}
             </div>
             <Button size="icon" variant="ghost" className="h-7 w-7 text-destructive" onClick={() => deleteAssignment.mutate(a.id)}>
               <Trash2 className="w-3 h-3" />

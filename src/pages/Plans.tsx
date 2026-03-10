@@ -489,7 +489,7 @@ export default function Plans() {
     setGeneratingPix(true);
     try {
       // Create purchase order in DB
-      const { error: poErr } = await supabase.from('purchase_orders').insert({
+      const { error: poErr } = await (supabase.from('purchase_orders') as any).insert({
         customer_name: customerName.trim(),
         customer_email: customerEmail.trim(),
         customer_phone: customerPhone.trim(),
