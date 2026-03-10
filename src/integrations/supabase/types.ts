@@ -4168,26 +4168,16 @@ export type Database = {
         Args: { p_store_id: string; p_user_id: string }
         Returns: boolean
       }
-      create_table_order:
-        | {
-            Args: {
-              p_items: Json
-              p_notes?: string
-              p_session_id: string
-              p_store_id: string
-            }
-            Returns: string
-          }
-        | {
-            Args: {
-              p_items: Json
-              p_notes?: string
-              p_session_id: string
-              p_store_id: string
-              p_table_id: string
-            }
-            Returns: string
-          }
+      create_table_order: {
+        Args: {
+          p_items: Json
+          p_notes?: string
+          p_store_id: string
+          p_table_id: string
+          p_table_session_id: string
+        }
+        Returns: string
+      }
       get_billing_gate: { Args: { p_store_id: string }; Returns: Json }
       get_store_current_usage: { Args: { p_store_id: string }; Returns: Json }
       get_store_plan_entitlements: {
