@@ -223,8 +223,8 @@ export default function AdminTables() {
           .eq('master_session_id', closingSession.id);
 
         // Close all merged sessions
-        const { data: mergedSessions } = await supabase
-          .from('table_sessions')
+        const { data: mergedSessions } = await (supabase
+          .from('table_sessions') as any)
           .select('id')
           .eq('merged_into_session_id', closingSession.id)
           .eq('status', 'open');

@@ -118,7 +118,7 @@ export default function OwnerVouchers() {
   };
 
   const handleCancel = async (id: string) => {
-    const { error } = await supabase.from('vouchers').update({ status: 'cancelled' }).eq('id', id);
+    const { error } = await (supabase.from('vouchers') as any).update({ status: 'cancelled' }).eq('id', id);
     if (error) {
       toast.error('Erro ao cancelar voucher');
       return;
