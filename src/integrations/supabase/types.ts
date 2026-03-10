@@ -311,6 +311,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "audit_logs_actor_id_fkey"
+            columns: ["actor_id"]
+            isOneToOne: false
+            referencedRelation: "v_customer_stats"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       banners: {
@@ -829,6 +836,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "carts_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_customer_stats"
+            referencedColumns: ["user_id"]
           },
         ]
       }
@@ -2018,6 +2032,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "orders_user_id_profiles_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_customer_stats"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       payment_intents: {
@@ -2736,6 +2757,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "push_delivery_logs_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_customer_stats"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       push_subscriptions: {
@@ -2773,6 +2801,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "push_subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_customer_stats"
+            referencedColumns: ["user_id"]
           },
         ]
       }
@@ -3485,6 +3520,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "store_users_user_id_profiles_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_customer_stats"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       stores: {
@@ -3745,6 +3787,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscriptions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_customer_stats"
+            referencedColumns: ["user_id"]
           },
         ]
       }
@@ -4130,6 +4179,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "user_notification_preferences_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "v_customer_stats"
+            referencedColumns: ["user_id"]
+          },
         ]
       }
       user_privacy_settings: {
@@ -4188,6 +4244,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "profiles"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_roles_user_id_profiles_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "v_customer_stats"
+            referencedColumns: ["user_id"]
           },
         ]
       }
@@ -4387,6 +4450,47 @@ export type Database = {
           },
         ]
       }
+      v_customer_stats: {
+        Row: {
+          avg_ticket: number | null
+          churn_risk_score: number | null
+          days_since_last_order: number | null
+          email: string | null
+          last_order_at: string | null
+          name: string | null
+          phone: string | null
+          total_orders: number | null
+          total_spent: number | null
+          user_id: string | null
+        }
+        Relationships: []
+      }
+      v_driver_stats: {
+        Row: {
+          avg_delivery_time_min: number | null
+          deliveries_count: number | null
+          driver_id: string | null
+          driver_name: string | null
+          driver_phone: string | null
+          last_active_at: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_roles_user_id_profiles_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_roles_user_id_profiles_fkey"
+            columns: ["driver_id"]
+            isOneToOne: false
+            referencedRelation: "v_customer_stats"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       v_orders_enriched: {
         Row: {
           created_at: string | null
@@ -4412,6 +4516,18 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      v_product_performance: {
+        Row: {
+          avg_price: number | null
+          category_id: string | null
+          category_name: string | null
+          product_id: string | null
+          product_name: string | null
+          qty_sold: number | null
+          revenue_sum: number | null
+        }
+        Relationships: []
       }
       v_sales_daily: {
         Row: {
@@ -4485,6 +4601,10 @@ export type Database = {
         Args: { p_store_id: string }
         Returns: Json
       }
+      get_user_subscription_gate: {
+        Args: { p_user_id: string }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -4503,6 +4623,10 @@ export type Database = {
           p_user_id: string
         }
         Returns: boolean
+      }
+      initialize_store_home_sections: {
+        Args: { p_store_id: string; p_store_type?: string }
+        Returns: undefined
       }
     }
     Enums: {
