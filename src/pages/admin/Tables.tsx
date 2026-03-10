@@ -202,8 +202,8 @@ export default function AdminTables() {
     setClosingLoading(true);
     try {
       // Update all pending orders for this session to 'delivered'
-      await supabase
-        .from('orders')
+      await (supabase
+        .from('orders') as any)
         .update({ status: 'delivered', payment_status: 'paid' })
         .eq('table_session_id', closingSession.id)
         .in('status', ['created', 'accepted', 'preparing', 'ready']);
@@ -223,8 +223,8 @@ export default function AdminTables() {
           .eq('master_session_id', closingSession.id);
 
         // Close all merged sessions
-        const { data: mergedSessions } = await supabase
-          .from('table_sessions')
+        const { data: mergedSessions } = await (supabase
+          .from('table_sessions') as any)
           .select('id')
           .eq('merged_into_session_id', closingSession.id)
           .eq('status', 'open');

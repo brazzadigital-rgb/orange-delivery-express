@@ -117,7 +117,7 @@ export function useUnmergeTableMutation() {
 
   return useMutation({
     mutationFn: async (params: { mergeRecordId: string; mergedFromSessionId: string; masterSessionId: string }) => {
-      await supabase.from('orders').update({ table_session_id: params.mergedFromSessionId, original_table_number: null, original_session_id: null } as any).eq('original_session_id', params.mergedFromSessionId).eq('table_session_id', params.masterSessionId);
+      await (supabase.from('orders') as any).update({ table_session_id: params.mergedFromSessionId, original_table_number: null, original_session_id: null }).eq('original_session_id', params.mergedFromSessionId).eq('table_session_id', params.masterSessionId);
       await supabase.from('table_sessions').update({ session_kind: 'single', merged_into_session_id: null, merged_at: null } as any).eq('id', params.mergedFromSessionId);
       await supabase.from('merged_tables').update({ status: 'released' }).eq('id', params.mergeRecordId);
 

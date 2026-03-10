@@ -94,7 +94,7 @@ export default function OwnerSubscriptionDetail() {
         .limit(1)
         .maybeSingle();
       if (error) throw error;
-      return data as SubscriptionDetail | null;
+      return data as unknown as SubscriptionDetail | null;
     },
     enabled: !!storeId,
   });

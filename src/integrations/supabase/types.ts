@@ -14,6 +14,33 @@ export type Database = {
   }
   public: {
     Tables: {
+      account_deletion_requests: {
+        Row: {
+          created_at: string
+          id: string
+          processed_at: string | null
+          reason: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          processed_at?: string | null
+          reason?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          processed_at?: string | null
+          reason?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       addresses: {
         Row: {
           city: string
@@ -64,6 +91,73 @@ export type Database = {
           zip?: string
         }
         Relationships: []
+      }
+      app_reviews: {
+        Row: {
+          admin_reply: string | null
+          app_version: string | null
+          comment: string | null
+          contact_allowed: boolean | null
+          created_at: string
+          id: string
+          is_public: boolean | null
+          order_id: string | null
+          platform: string | null
+          rating: number
+          store_id: string
+          user_id: string
+        }
+        Insert: {
+          admin_reply?: string | null
+          app_version?: string | null
+          comment?: string | null
+          contact_allowed?: boolean | null
+          created_at?: string
+          id?: string
+          is_public?: boolean | null
+          order_id?: string | null
+          platform?: string | null
+          rating: number
+          store_id: string
+          user_id: string
+        }
+        Update: {
+          admin_reply?: string | null
+          app_version?: string | null
+          comment?: string | null
+          contact_allowed?: boolean | null
+          created_at?: string
+          id?: string
+          is_public?: boolean | null
+          order_id?: string | null
+          platform?: string | null
+          rating?: number
+          store_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "app_reviews_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "app_reviews_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "v_orders_enriched"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "app_reviews_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       app_settings: {
         Row: {
@@ -267,6 +361,337 @@ export type Database = {
             foreignKeyName: "banners_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      billing_invoices: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string | null
+          due_date: string | null
+          gateway_invoice_id: string | null
+          id: string
+          paid_at: string | null
+          period_end: string | null
+          period_start: string | null
+          status: string | null
+          store_id: string
+          subscription_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string | null
+          due_date?: string | null
+          gateway_invoice_id?: string | null
+          id?: string
+          paid_at?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          status?: string | null
+          store_id: string
+          subscription_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string | null
+          due_date?: string | null
+          gateway_invoice_id?: string | null
+          id?: string
+          paid_at?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          status?: string | null
+          store_id?: string
+          subscription_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_invoices_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "billing_invoices_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "store_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      billing_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string | null
+          gateway_payment_id: string | null
+          id: string
+          method: string | null
+          paid_at: string | null
+          period_end: string | null
+          period_start: string | null
+          status: string | null
+          store_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string | null
+          gateway_payment_id?: string | null
+          id?: string
+          method?: string | null
+          paid_at?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          status?: string | null
+          store_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string | null
+          gateway_payment_id?: string | null
+          id?: string
+          method?: string | null
+          paid_at?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          status?: string | null
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_payments_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      billing_plans: {
+        Row: {
+          active: boolean | null
+          annual_price: number | null
+          code: string
+          created_at: string
+          description: string | null
+          features: Json | null
+          has_analytics: boolean | null
+          has_api_access: boolean | null
+          has_custom_domain: boolean | null
+          has_priority_support: boolean | null
+          id: string
+          is_active: boolean | null
+          is_default: boolean | null
+          max_admins: number | null
+          max_banners: number | null
+          max_categories: number | null
+          max_coupons: number | null
+          max_delivery_zones: number | null
+          max_drivers: number | null
+          max_orders_month: number | null
+          max_orders_per_month: number | null
+          max_products: number | null
+          max_promotions: number | null
+          max_tables: number | null
+          max_users: number | null
+          max_waiters: number | null
+          monthly_price: number | null
+          name: string
+          price_monthly: number | null
+          price_yearly: number | null
+          slug: string | null
+          sort_order: number | null
+        }
+        Insert: {
+          active?: boolean | null
+          annual_price?: number | null
+          code: string
+          created_at?: string
+          description?: string | null
+          features?: Json | null
+          has_analytics?: boolean | null
+          has_api_access?: boolean | null
+          has_custom_domain?: boolean | null
+          has_priority_support?: boolean | null
+          id?: string
+          is_active?: boolean | null
+          is_default?: boolean | null
+          max_admins?: number | null
+          max_banners?: number | null
+          max_categories?: number | null
+          max_coupons?: number | null
+          max_delivery_zones?: number | null
+          max_drivers?: number | null
+          max_orders_month?: number | null
+          max_orders_per_month?: number | null
+          max_products?: number | null
+          max_promotions?: number | null
+          max_tables?: number | null
+          max_users?: number | null
+          max_waiters?: number | null
+          monthly_price?: number | null
+          name: string
+          price_monthly?: number | null
+          price_yearly?: number | null
+          slug?: string | null
+          sort_order?: number | null
+        }
+        Update: {
+          active?: boolean | null
+          annual_price?: number | null
+          code?: string
+          created_at?: string
+          description?: string | null
+          features?: Json | null
+          has_analytics?: boolean | null
+          has_api_access?: boolean | null
+          has_custom_domain?: boolean | null
+          has_priority_support?: boolean | null
+          id?: string
+          is_active?: boolean | null
+          is_default?: boolean | null
+          max_admins?: number | null
+          max_banners?: number | null
+          max_categories?: number | null
+          max_coupons?: number | null
+          max_delivery_zones?: number | null
+          max_drivers?: number | null
+          max_orders_month?: number | null
+          max_orders_per_month?: number | null
+          max_products?: number | null
+          max_promotions?: number | null
+          max_tables?: number | null
+          max_users?: number | null
+          max_waiters?: number | null
+          monthly_price?: number | null
+          name?: string
+          price_monthly?: number | null
+          price_yearly?: number | null
+          slug?: string | null
+          sort_order?: number | null
+        }
+        Relationships: []
+      }
+      billing_settings: {
+        Row: {
+          created_at: string
+          currency: string | null
+          current_plan_amount: number | null
+          current_plan_code: string | null
+          current_plan_discount_percent: number | null
+          current_plan_months: number | null
+          features_json: Json | null
+          gateway_customer_id: string | null
+          gateway_subscription_id: string | null
+          grace_period_days: number | null
+          id: string
+          last_mp_status: string | null
+          last_payment_amount: number | null
+          last_payment_date: string | null
+          max_admins: number | null
+          max_drivers: number | null
+          max_orders_month: number | null
+          max_products: number | null
+          monthly_price: number | null
+          mp_init_point: string | null
+          mp_payer_email: string | null
+          mp_preapproval_id: string | null
+          next_billing_at: string | null
+          next_due_date: string | null
+          payment_method: string | null
+          plan_name: string | null
+          status: string | null
+          store_id: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          subscription_status: string | null
+          trial_ends_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          currency?: string | null
+          current_plan_amount?: number | null
+          current_plan_code?: string | null
+          current_plan_discount_percent?: number | null
+          current_plan_months?: number | null
+          features_json?: Json | null
+          gateway_customer_id?: string | null
+          gateway_subscription_id?: string | null
+          grace_period_days?: number | null
+          id?: string
+          last_mp_status?: string | null
+          last_payment_amount?: number | null
+          last_payment_date?: string | null
+          max_admins?: number | null
+          max_drivers?: number | null
+          max_orders_month?: number | null
+          max_products?: number | null
+          monthly_price?: number | null
+          mp_init_point?: string | null
+          mp_payer_email?: string | null
+          mp_preapproval_id?: string | null
+          next_billing_at?: string | null
+          next_due_date?: string | null
+          payment_method?: string | null
+          plan_name?: string | null
+          status?: string | null
+          store_id: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_status?: string | null
+          trial_ends_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          currency?: string | null
+          current_plan_amount?: number | null
+          current_plan_code?: string | null
+          current_plan_discount_percent?: number | null
+          current_plan_months?: number | null
+          features_json?: Json | null
+          gateway_customer_id?: string | null
+          gateway_subscription_id?: string | null
+          grace_period_days?: number | null
+          id?: string
+          last_mp_status?: string | null
+          last_payment_amount?: number | null
+          last_payment_date?: string | null
+          max_admins?: number | null
+          max_drivers?: number | null
+          max_orders_month?: number | null
+          max_products?: number | null
+          monthly_price?: number | null
+          mp_init_point?: string | null
+          mp_payer_email?: string | null
+          mp_preapproval_id?: string | null
+          next_billing_at?: string | null
+          next_due_date?: string | null
+          payment_method?: string | null
+          plan_name?: string | null
+          status?: string | null
+          store_id?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          subscription_status?: string | null
+          trial_ends_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_settings_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
             referencedRelation: "stores"
             referencedColumns: ["id"]
           },
@@ -590,6 +1015,57 @@ export type Database = {
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "driver_locations_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "v_orders_enriched"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      drivers: {
+        Row: {
+          active: boolean | null
+          created_at: string
+          id: string
+          license_plate: string | null
+          name: string | null
+          phone: string | null
+          store_id: string
+          user_id: string
+          vehicle_type: string | null
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string
+          id?: string
+          license_plate?: string | null
+          name?: string | null
+          phone?: string | null
+          store_id: string
+          user_id: string
+          vehicle_type?: string | null
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string
+          id?: string
+          license_plate?: string | null
+          name?: string | null
+          phone?: string | null
+          store_id?: string
+          user_id?: string
+          vehicle_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "drivers_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
         ]
       }
       favorites: {
@@ -762,6 +1238,299 @@ export type Database = {
           },
         ]
       }
+      loyalty_redemptions: {
+        Row: {
+          created_at: string
+          id: string
+          order_id: string | null
+          points_spent: number
+          reward_id: string | null
+          status: string
+          store_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          order_id?: string | null
+          points_spent?: number
+          reward_id?: string | null
+          status?: string
+          store_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          order_id?: string | null
+          points_spent?: number
+          reward_id?: string | null
+          status?: string
+          store_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loyalty_redemptions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loyalty_redemptions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "v_orders_enriched"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loyalty_redemptions_reward_id_fkey"
+            columns: ["reward_id"]
+            isOneToOne: false
+            referencedRelation: "loyalty_rewards"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loyalty_redemptions_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      loyalty_rewards: {
+        Row: {
+          active: boolean | null
+          constraints: Json | null
+          created_at: string
+          description: string | null
+          id: string
+          name: string
+          points_cost: number
+          sort_order: number | null
+          store_id: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean | null
+          constraints?: Json | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name: string
+          points_cost?: number
+          sort_order?: number | null
+          store_id: string
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean | null
+          constraints?: Json | null
+          created_at?: string
+          description?: string | null
+          id?: string
+          name?: string
+          points_cost?: number
+          sort_order?: number | null
+          store_id?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loyalty_rewards_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      loyalty_transactions: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          meta: Json | null
+          order_id: string | null
+          points: number
+          store_id: string
+          type: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          meta?: Json | null
+          order_id?: string | null
+          points: number
+          store_id: string
+          type: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          meta?: Json | null
+          order_id?: string | null
+          points?: number
+          store_id?: string
+          type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loyalty_transactions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loyalty_transactions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "v_orders_enriched"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "loyalty_transactions_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      loyalty_wallets: {
+        Row: {
+          created_at: string
+          id: string
+          lifetime_earned: number
+          lifetime_spent: number
+          points_balance: number
+          points_pending: number
+          store_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          lifetime_earned?: number
+          lifetime_spent?: number
+          points_balance?: number
+          points_pending?: number
+          store_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          lifetime_earned?: number
+          lifetime_spent?: number
+          points_balance?: number
+          points_pending?: number
+          store_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "loyalty_wallets_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      merged_tables: {
+        Row: {
+          created_at: string
+          id: string
+          master_session_id: string
+          merged_from_session_id: string | null
+          status: string
+          table_id: string
+          table_number: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          master_session_id: string
+          merged_from_session_id?: string | null
+          status?: string
+          table_id: string
+          table_number: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          master_session_id?: string
+          merged_from_session_id?: string | null
+          status?: string
+          table_id?: string
+          table_number?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "merged_tables_master_session_id_fkey"
+            columns: ["master_session_id"]
+            isOneToOne: false
+            referencedRelation: "table_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "merged_tables_merged_from_session_id_fkey"
+            columns: ["merged_from_session_id"]
+            isOneToOne: false
+            referencedRelation: "table_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "merged_tables_table_id_fkey"
+            columns: ["table_id"]
+            isOneToOne: false
+            referencedRelation: "restaurant_tables"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      notification_preferences: {
+        Row: {
+          created_at: string
+          id: string
+          loyalty: boolean | null
+          order_updates: boolean | null
+          promotions: boolean | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          loyalty?: boolean | null
+          order_updates?: boolean | null
+          promotions?: boolean | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          loyalty?: boolean | null
+          order_updates?: boolean | null
+          promotions?: boolean | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       notifications: {
         Row: {
           body: string
@@ -828,6 +1597,13 @@ export type Database = {
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "order_events_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "v_orders_enriched"
+            referencedColumns: ["id"]
+          },
         ]
       }
       order_items: {
@@ -870,6 +1646,13 @@ export type Database = {
             columns: ["order_id"]
             isOneToOne: false
             referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_items_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "v_orders_enriched"
             referencedColumns: ["id"]
           },
           {
@@ -930,6 +1713,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "order_print_jobs_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "v_orders_enriched"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "order_print_jobs_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: false
@@ -972,6 +1762,13 @@ export type Database = {
             columns: ["order_id"]
             isOneToOne: false
             referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "order_status_history_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "v_orders_enriched"
             referencedColumns: ["id"]
           },
         ]
@@ -1162,6 +1959,66 @@ export type Database = {
             columns: ["order_id"]
             isOneToOne: false
             referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "payment_intents_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "v_orders_enriched"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      payment_settings: {
+        Row: {
+          cash_enabled: boolean | null
+          created_at: string
+          credit_card_enabled: boolean | null
+          debit_card_enabled: boolean | null
+          id: string
+          mp_enabled: boolean | null
+          pix_enabled: boolean | null
+          pix_key: string | null
+          pix_name: string | null
+          store_id: string
+          stripe_enabled: boolean | null
+          updated_at: string
+        }
+        Insert: {
+          cash_enabled?: boolean | null
+          created_at?: string
+          credit_card_enabled?: boolean | null
+          debit_card_enabled?: boolean | null
+          id?: string
+          mp_enabled?: boolean | null
+          pix_enabled?: boolean | null
+          pix_key?: string | null
+          pix_name?: string | null
+          store_id: string
+          stripe_enabled?: boolean | null
+          updated_at?: string
+        }
+        Update: {
+          cash_enabled?: boolean | null
+          created_at?: string
+          credit_card_enabled?: boolean | null
+          debit_card_enabled?: boolean | null
+          id?: string
+          mp_enabled?: boolean | null
+          pix_enabled?: boolean | null
+          pix_key?: string | null
+          pix_name?: string | null
+          store_id?: string
+          stripe_enabled?: boolean | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payment_settings_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "stores"
             referencedColumns: ["id"]
           },
         ]
@@ -1653,6 +2510,83 @@ export type Database = {
           },
         ]
       }
+      purchase_orders: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string | null
+          customer_email: string | null
+          customer_name: string | null
+          customer_phone: string | null
+          efi_e2eid: string | null
+          efi_expiration: string | null
+          efi_qrcode: string | null
+          efi_qrcode_image: string | null
+          efi_txid: string | null
+          id: string
+          paid_at: string | null
+          plan_code: string | null
+          plan_months: number | null
+          plan_name: string | null
+          status: string | null
+          store_id: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          efi_e2eid?: string | null
+          efi_expiration?: string | null
+          efi_qrcode?: string | null
+          efi_qrcode_image?: string | null
+          efi_txid?: string | null
+          id?: string
+          paid_at?: string | null
+          plan_code?: string | null
+          plan_months?: number | null
+          plan_name?: string | null
+          status?: string | null
+          store_id: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string | null
+          customer_email?: string | null
+          customer_name?: string | null
+          customer_phone?: string | null
+          efi_e2eid?: string | null
+          efi_expiration?: string | null
+          efi_qrcode?: string | null
+          efi_qrcode_image?: string | null
+          efi_txid?: string | null
+          id?: string
+          paid_at?: string | null
+          plan_code?: string | null
+          plan_months?: number | null
+          plan_name?: string | null
+          status?: string | null
+          store_id?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "purchase_orders_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       push_delivery_logs: {
         Row: {
           created_at: string
@@ -1732,6 +2666,59 @@ export type Database = {
           },
         ]
       }
+      restaurant_tables: {
+        Row: {
+          active: boolean | null
+          area: string | null
+          capacity: number | null
+          created_at: string
+          id: string
+          is_active: boolean | null
+          label: string | null
+          name: string | null
+          number: number
+          qr_token: string | null
+          status: string
+          store_id: string
+        }
+        Insert: {
+          active?: boolean | null
+          area?: string | null
+          capacity?: number | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          label?: string | null
+          name?: string | null
+          number: number
+          qr_token?: string | null
+          status?: string
+          store_id: string
+        }
+        Update: {
+          active?: boolean | null
+          area?: string | null
+          capacity?: number | null
+          created_at?: string
+          id?: string
+          is_active?: boolean | null
+          label?: string | null
+          name?: string | null
+          number?: number
+          qr_token?: string | null
+          status?: string
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "restaurant_tables_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reviews: {
         Row: {
           comment: string | null
@@ -1769,9 +2756,263 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "reviews_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "v_orders_enriched"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "reviews_store_id_fkey"
             columns: ["store_id"]
             isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      store_admin_settings: {
+        Row: {
+          auto_accept_orders: boolean | null
+          created_at: string
+          default_prep_time: number | null
+          id: string
+          order_alert_sound: string | null
+          order_alert_volume: number | null
+          store_id: string
+          updated_at: string
+        }
+        Insert: {
+          auto_accept_orders?: boolean | null
+          created_at?: string
+          default_prep_time?: number | null
+          id?: string
+          order_alert_sound?: string | null
+          order_alert_volume?: number | null
+          store_id: string
+          updated_at?: string
+        }
+        Update: {
+          auto_accept_orders?: boolean | null
+          created_at?: string
+          default_prep_time?: number | null
+          id?: string
+          order_alert_sound?: string | null
+          order_alert_volume?: number | null
+          store_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_admin_settings_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      store_app_review_settings: {
+        Row: {
+          app_store_url: string | null
+          ask_after_orders: number | null
+          created_at: string
+          enabled: boolean | null
+          id: string
+          min_days_between_reviews: number | null
+          min_rating_for_store: number | null
+          play_store_url: string | null
+          prompt_message: string | null
+          review_prompt_subtitle: string | null
+          review_prompt_title: string | null
+          store_id: string
+          thank_you_message: string | null
+          updated_at: string
+        }
+        Insert: {
+          app_store_url?: string | null
+          ask_after_orders?: number | null
+          created_at?: string
+          enabled?: boolean | null
+          id?: string
+          min_days_between_reviews?: number | null
+          min_rating_for_store?: number | null
+          play_store_url?: string | null
+          prompt_message?: string | null
+          review_prompt_subtitle?: string | null
+          review_prompt_title?: string | null
+          store_id: string
+          thank_you_message?: string | null
+          updated_at?: string
+        }
+        Update: {
+          app_store_url?: string | null
+          ask_after_orders?: number | null
+          created_at?: string
+          enabled?: boolean | null
+          id?: string
+          min_days_between_reviews?: number | null
+          min_rating_for_store?: number | null
+          play_store_url?: string | null
+          prompt_message?: string | null
+          review_prompt_subtitle?: string | null
+          review_prompt_title?: string | null
+          store_id?: string
+          thank_you_message?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_app_review_settings_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      store_features: {
+        Row: {
+          created_at: string
+          features: Json
+          id: string
+          store_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          features?: Json
+          id?: string
+          store_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          features?: Json
+          id?: string
+          store_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_features_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      store_home_sections: {
+        Row: {
+          config: Json | null
+          created_at: string
+          enabled: boolean | null
+          id: string
+          label: string
+          section_key: string
+          sort_order: number | null
+          store_id: string
+        }
+        Insert: {
+          config?: Json | null
+          created_at?: string
+          enabled?: boolean | null
+          id?: string
+          label: string
+          section_key: string
+          sort_order?: number | null
+          store_id: string
+        }
+        Update: {
+          config?: Json | null
+          created_at?: string
+          enabled?: boolean | null
+          id?: string
+          label?: string
+          section_key?: string
+          sort_order?: number | null
+          store_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_home_sections_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      store_loyalty_settings: {
+        Row: {
+          allow_partial_redeem_shipping: boolean | null
+          auto_credit: boolean | null
+          auto_credit_enabled: boolean | null
+          created_at: string
+          credit_on_status: string | null
+          earning_rate_points_per_real: number | null
+          enabled: boolean
+          expiry_days: number | null
+          id: string
+          max_discount_pct: number | null
+          max_points_per_order: number | null
+          max_points_redeem_per_order: number | null
+          min_order_to_earn: number | null
+          points_expire_days: number | null
+          program_name: string | null
+          reais_per_point: number | null
+          store_id: string
+          updated_at: string
+          welcome_bonus: number | null
+        }
+        Insert: {
+          allow_partial_redeem_shipping?: boolean | null
+          auto_credit?: boolean | null
+          auto_credit_enabled?: boolean | null
+          created_at?: string
+          credit_on_status?: string | null
+          earning_rate_points_per_real?: number | null
+          enabled?: boolean
+          expiry_days?: number | null
+          id?: string
+          max_discount_pct?: number | null
+          max_points_per_order?: number | null
+          max_points_redeem_per_order?: number | null
+          min_order_to_earn?: number | null
+          points_expire_days?: number | null
+          program_name?: string | null
+          reais_per_point?: number | null
+          store_id: string
+          updated_at?: string
+          welcome_bonus?: number | null
+        }
+        Update: {
+          allow_partial_redeem_shipping?: boolean | null
+          auto_credit?: boolean | null
+          auto_credit_enabled?: boolean | null
+          created_at?: string
+          credit_on_status?: string | null
+          earning_rate_points_per_real?: number | null
+          enabled?: boolean
+          expiry_days?: number | null
+          id?: string
+          max_discount_pct?: number | null
+          max_points_per_order?: number | null
+          max_points_redeem_per_order?: number | null
+          min_order_to_earn?: number | null
+          points_expire_days?: number | null
+          program_name?: string | null
+          reais_per_point?: number | null
+          store_id?: string
+          updated_at?: string
+          welcome_bonus?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_loyalty_settings_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: true
             referencedRelation: "stores"
             referencedColumns: ["id"]
           },
@@ -1972,6 +3213,83 @@ export type Database = {
           },
         ]
       }
+      store_subscriptions: {
+        Row: {
+          amount: number | null
+          billing_cycle: string | null
+          cancel_at_period_end: boolean | null
+          canceled_at: string | null
+          created_at: string
+          currency: string | null
+          current_period_end: string | null
+          current_period_start: string | null
+          gateway: string | null
+          gateway_subscription_id: string | null
+          id: string
+          owner_user_id: string | null
+          plan_code: string
+          plan_id: string | null
+          plan_months: number | null
+          status: string
+          store_id: string
+          store_name: string | null
+          trial_ends_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          amount?: number | null
+          billing_cycle?: string | null
+          cancel_at_period_end?: boolean | null
+          canceled_at?: string | null
+          created_at?: string
+          currency?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          gateway?: string | null
+          gateway_subscription_id?: string | null
+          id?: string
+          owner_user_id?: string | null
+          plan_code?: string
+          plan_id?: string | null
+          plan_months?: number | null
+          status?: string
+          store_id: string
+          store_name?: string | null
+          trial_ends_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          amount?: number | null
+          billing_cycle?: string | null
+          cancel_at_period_end?: boolean | null
+          canceled_at?: string | null
+          created_at?: string
+          currency?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          gateway?: string | null
+          gateway_subscription_id?: string | null
+          id?: string
+          owner_user_id?: string | null
+          plan_code?: string
+          plan_id?: string | null
+          plan_months?: number | null
+          status?: string
+          store_id?: string
+          store_name?: string | null
+          trial_ends_at?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "store_subscriptions_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       store_users: {
         Row: {
           accepted_at: string | null
@@ -2041,6 +3359,7 @@ export type Database = {
           primary_color: string | null
           slug: string | null
           status: string | null
+          store_type: string | null
           updated_at: string
         }
         Insert: {
@@ -2062,6 +3381,7 @@ export type Database = {
           primary_color?: string | null
           slug?: string | null
           status?: string | null
+          store_type?: string | null
           updated_at?: string
         }
         Update: {
@@ -2083,9 +3403,386 @@ export type Database = {
           primary_color?: string | null
           slug?: string | null
           status?: string | null
+          store_type?: string | null
           updated_at?: string
         }
         Relationships: []
+      }
+      subscription_payments: {
+        Row: {
+          amount: number
+          created_at: string
+          currency: string | null
+          gateway_payment_id: string | null
+          id: string
+          method: string | null
+          paid_at: string | null
+          period_end: string | null
+          period_start: string | null
+          status: string | null
+          store_id: string
+          subscription_id: string | null
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          currency?: string | null
+          gateway_payment_id?: string | null
+          id?: string
+          method?: string | null
+          paid_at?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          status?: string | null
+          store_id: string
+          subscription_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          currency?: string | null
+          gateway_payment_id?: string | null
+          id?: string
+          method?: string | null
+          paid_at?: string | null
+          period_end?: string | null
+          period_start?: string | null
+          status?: string | null
+          store_id?: string
+          subscription_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscription_payments_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscription_payments_subscription_id_fkey"
+            columns: ["subscription_id"]
+            isOneToOne: false
+            referencedRelation: "subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      subscriptions: {
+        Row: {
+          amount_per_cycle: number | null
+          base_monthly_price: number | null
+          cancel_at: string | null
+          canceled_at: string | null
+          created_at: string
+          currency: string | null
+          current_period_end: string | null
+          current_period_start: string | null
+          discount_percent: number | null
+          final_monthly_price: number | null
+          gateway: string | null
+          gateway_customer_id: string | null
+          gateway_subscription_id: string | null
+          grace_period_days: number | null
+          id: string
+          last_mp_status: string | null
+          last_payment_amount: number | null
+          last_payment_at: string | null
+          last_payment_date: string | null
+          mp_init_point: string | null
+          mp_payer_email: string | null
+          mp_preapproval_id: string | null
+          next_due_date: string | null
+          plan_code: string
+          plan_months: number | null
+          status: string
+          store_id: string
+          trial_ends_at: string | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          amount_per_cycle?: number | null
+          base_monthly_price?: number | null
+          cancel_at?: string | null
+          canceled_at?: string | null
+          created_at?: string
+          currency?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          discount_percent?: number | null
+          final_monthly_price?: number | null
+          gateway?: string | null
+          gateway_customer_id?: string | null
+          gateway_subscription_id?: string | null
+          grace_period_days?: number | null
+          id?: string
+          last_mp_status?: string | null
+          last_payment_amount?: number | null
+          last_payment_at?: string | null
+          last_payment_date?: string | null
+          mp_init_point?: string | null
+          mp_payer_email?: string | null
+          mp_preapproval_id?: string | null
+          next_due_date?: string | null
+          plan_code?: string
+          plan_months?: number | null
+          status?: string
+          store_id: string
+          trial_ends_at?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          amount_per_cycle?: number | null
+          base_monthly_price?: number | null
+          cancel_at?: string | null
+          canceled_at?: string | null
+          created_at?: string
+          currency?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          discount_percent?: number | null
+          final_monthly_price?: number | null
+          gateway?: string | null
+          gateway_customer_id?: string | null
+          gateway_subscription_id?: string | null
+          grace_period_days?: number | null
+          id?: string
+          last_mp_status?: string | null
+          last_payment_amount?: number | null
+          last_payment_at?: string | null
+          last_payment_date?: string | null
+          mp_init_point?: string | null
+          mp_payer_email?: string | null
+          mp_preapproval_id?: string | null
+          next_due_date?: string | null
+          plan_code?: string
+          plan_months?: number | null
+          status?: string
+          store_id?: string
+          trial_ends_at?: string | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      table_calls: {
+        Row: {
+          answered_at: string | null
+          answered_by: string | null
+          attended_at: string | null
+          attended_by_user_id: string | null
+          created_at: string
+          id: string
+          message: string | null
+          session_id: string | null
+          status: string
+          store_id: string
+          table_id: string
+          table_number: number | null
+          table_session_id: string | null
+          type: string
+        }
+        Insert: {
+          answered_at?: string | null
+          answered_by?: string | null
+          attended_at?: string | null
+          attended_by_user_id?: string | null
+          created_at?: string
+          id?: string
+          message?: string | null
+          session_id?: string | null
+          status?: string
+          store_id: string
+          table_id: string
+          table_number?: number | null
+          table_session_id?: string | null
+          type?: string
+        }
+        Update: {
+          answered_at?: string | null
+          answered_by?: string | null
+          attended_at?: string | null
+          attended_by_user_id?: string | null
+          created_at?: string
+          id?: string
+          message?: string | null
+          session_id?: string | null
+          status?: string
+          store_id?: string
+          table_id?: string
+          table_number?: number | null
+          table_session_id?: string | null
+          type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "table_calls_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "table_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "table_calls_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "table_calls_table_id_fkey"
+            columns: ["table_id"]
+            isOneToOne: false
+            referencedRelation: "restaurant_tables"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "table_calls_table_session_id_fkey"
+            columns: ["table_session_id"]
+            isOneToOne: false
+            referencedRelation: "table_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      table_session_items: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          item_total: number
+          name_snapshot: string
+          options_snapshot: Json | null
+          product_id: string | null
+          quantity: number
+          session_id: string
+          status: string | null
+          unit_price: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          item_total: number
+          name_snapshot: string
+          options_snapshot?: Json | null
+          product_id?: string | null
+          quantity?: number
+          session_id: string
+          status?: string | null
+          unit_price: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          item_total?: number
+          name_snapshot?: string
+          options_snapshot?: Json | null
+          product_id?: string | null
+          quantity?: number
+          session_id?: string
+          status?: string | null
+          unit_price?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "table_session_items_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "table_session_items_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "table_sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      table_sessions: {
+        Row: {
+          closed_at: string | null
+          closed_by: string | null
+          created_at: string
+          customer_name: string | null
+          customer_phone: string | null
+          id: string
+          last_call_at: string | null
+          notes: string | null
+          opened_at: string
+          opened_by: string | null
+          opened_by_waiter_id: string | null
+          push_subscription: Json | null
+          status: string
+          store_id: string
+          table_id: string
+          total: number | null
+        }
+        Insert: {
+          closed_at?: string | null
+          closed_by?: string | null
+          created_at?: string
+          customer_name?: string | null
+          customer_phone?: string | null
+          id?: string
+          last_call_at?: string | null
+          notes?: string | null
+          opened_at?: string
+          opened_by?: string | null
+          opened_by_waiter_id?: string | null
+          push_subscription?: Json | null
+          status?: string
+          store_id: string
+          table_id: string
+          total?: number | null
+        }
+        Update: {
+          closed_at?: string | null
+          closed_by?: string | null
+          created_at?: string
+          customer_name?: string | null
+          customer_phone?: string | null
+          id?: string
+          last_call_at?: string | null
+          notes?: string | null
+          opened_at?: string
+          opened_by?: string | null
+          opened_by_waiter_id?: string | null
+          push_subscription?: Json | null
+          status?: string
+          store_id?: string
+          table_id?: string
+          total?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "table_sessions_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "table_sessions_table_id_fkey"
+            columns: ["table_id"]
+            isOneToOne: false
+            referencedRelation: "restaurant_tables"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_notification_preferences: {
         Row: {
@@ -2134,6 +3831,36 @@ export type Database = {
           },
         ]
       }
+      user_privacy_settings: {
+        Row: {
+          allow_promotional_contact: boolean | null
+          created_at: string
+          id: string
+          share_location_during_delivery: boolean | null
+          show_name_to_store: boolean | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          allow_promotional_contact?: boolean | null
+          created_at?: string
+          id?: string
+          share_location_during_delivery?: boolean | null
+          show_name_to_store?: boolean | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          allow_promotional_contact?: boolean | null
+          created_at?: string
+          id?: string
+          share_location_during_delivery?: boolean | null
+          show_name_to_store?: boolean | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -2163,6 +3890,171 @@ export type Database = {
           },
         ]
       }
+      vouchers: {
+        Row: {
+          active: boolean | null
+          amount: number | null
+          code: string
+          created_at: string
+          description: string | null
+          discount_percent: number | null
+          expires_at: string | null
+          id: string
+          max_uses: number | null
+          min_plan: string | null
+          owner_user_id: string | null
+          plan_code: string | null
+          plan_months: number | null
+          plan_name: string | null
+          store_id: string | null
+          type: string | null
+          used_count: number | null
+        }
+        Insert: {
+          active?: boolean | null
+          amount?: number | null
+          code: string
+          created_at?: string
+          description?: string | null
+          discount_percent?: number | null
+          expires_at?: string | null
+          id?: string
+          max_uses?: number | null
+          min_plan?: string | null
+          owner_user_id?: string | null
+          plan_code?: string | null
+          plan_months?: number | null
+          plan_name?: string | null
+          store_id?: string | null
+          type?: string | null
+          used_count?: number | null
+        }
+        Update: {
+          active?: boolean | null
+          amount?: number | null
+          code?: string
+          created_at?: string
+          description?: string | null
+          discount_percent?: number | null
+          expires_at?: string | null
+          id?: string
+          max_uses?: number | null
+          min_plan?: string | null
+          owner_user_id?: string | null
+          plan_code?: string | null
+          plan_months?: number | null
+          plan_name?: string | null
+          store_id?: string | null
+          type?: string | null
+          used_count?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "vouchers_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      waiter_assignments: {
+        Row: {
+          active: boolean | null
+          created_at: string
+          id: string
+          session_id: string | null
+          store_id: string
+          table_id: string
+          waiter_id: string
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string
+          id?: string
+          session_id?: string | null
+          store_id: string
+          table_id: string
+          waiter_id: string
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string
+          id?: string
+          session_id?: string | null
+          store_id?: string
+          table_id?: string
+          waiter_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "waiter_assignments_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "table_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "waiter_assignments_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "waiter_assignments_table_id_fkey"
+            columns: ["table_id"]
+            isOneToOne: false
+            referencedRelation: "restaurant_tables"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "waiter_assignments_waiter_id_fkey"
+            columns: ["waiter_id"]
+            isOneToOne: false
+            referencedRelation: "waiters"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      waiters: {
+        Row: {
+          active: boolean | null
+          created_at: string
+          display_name: string | null
+          id: string
+          name: string | null
+          store_id: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          name?: string | null
+          store_id: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean | null
+          created_at?: string
+          display_name?: string | null
+          id?: string
+          name?: string | null
+          store_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "waiters_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       driver_locations_latest: {
@@ -2185,10 +4077,113 @@ export type Database = {
             referencedRelation: "orders"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "driver_locations_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "v_orders_enriched"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_orders_enriched: {
+        Row: {
+          created_at: string | null
+          customer_name: string | null
+          delivery_time_min: number | null
+          id: string | null
+          order_number: number | null
+          payment_method: string | null
+          payment_status: string | null
+          prep_time_min: number | null
+          status: string | null
+          store_id: string | null
+          time_to_accept_min: number | null
+          total: number | null
+          total_cycle_time_min: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_sales_daily: {
+        Row: {
+          aov: number | null
+          cancel_rate: number | null
+          date: string | null
+          day: string | null
+          delivery_fee_sum: number | null
+          delivery_fees: number | null
+          delivery_share: number | null
+          discounts: number | null
+          discounts_sum: number | null
+          gross_revenue: number | null
+          net_revenue: number | null
+          order_count: number | null
+          orders_count: number | null
+          paid_rate: number | null
+          pickup_share: number | null
+          revenue: number | null
+          store_id: string | null
+          table_share: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_sales_hourly: {
+        Row: {
+          aov: number | null
+          gross_revenue: number | null
+          hour: number | null
+          orders_count: number | null
+          store_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "orders_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
         ]
       }
     }
     Functions: {
+      approve_loyalty_points: { Args: { p_order_id: string }; Returns: boolean }
+      can_submit_review: {
+        Args: { p_store_id: string; p_user_id: string }
+        Returns: boolean
+      }
+      create_table_order: {
+        Args: {
+          p_items: Json
+          p_notes?: string
+          p_store_id: string
+          p_table_id: string
+          p_table_session_id: string
+        }
+        Returns: string
+      }
+      get_billing_gate: { Args: { p_store_id: string }; Returns: Json }
+      get_store_current_usage: { Args: { p_store_id: string }; Returns: Json }
+      get_store_plan_entitlements: {
+        Args: { p_store_id: string }
+        Returns: Json
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

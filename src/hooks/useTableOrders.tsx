@@ -335,8 +335,8 @@ export function useCreateWaiterAssignment() {
   const qc = useQueryClient();
   return useMutation({
     mutationFn: async (params: { waiter_user_id: string; table_id?: string; area?: string }) => {
-      const { error } = await supabase
-        .from('waiter_assignments')
+      const { error } = await (supabase
+        .from('waiter_assignments') as any)
         .insert({ ...params, store_id: storeId });
       if (error) throw error;
     },

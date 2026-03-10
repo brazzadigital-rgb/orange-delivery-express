@@ -169,8 +169,8 @@ export default function AdminSubscription() {
     if (!voucherCode.trim() || !storeId) return;
     setRedeemingVoucher(true);
     try {
-      const { data: voucher, error: findErr } = await supabase
-        .from('vouchers')
+      const { data: voucher, error: findErr } = await (supabase
+        .from('vouchers') as any)
         .select('*')
         .eq('code', voucherCode.trim().toUpperCase())
         .eq('status', 'active')

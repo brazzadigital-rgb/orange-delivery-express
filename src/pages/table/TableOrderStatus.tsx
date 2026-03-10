@@ -79,7 +79,7 @@ export default function TableOrderStatus() {
       .maybeSingle();
 
     if (!error && data) {
-      setOrder(data as OrderData);
+      setOrder(data as unknown as OrderData);
     }
     setIsLoading(false);
   };
