@@ -420,3 +420,76 @@ function DemoProductsButton() {
     </Button>
   );
 }
+
+function GenerateImagesButton({ products, onComplete }: { products: any[] | undefined; onComplete: () => void }) {
+  const [generating, setGenerating] = useState(false);
+  const [progress, setProgress] = useState('');
+  const storeId = useStoreId();
+  const { store } = useTenant();
+
+  const productsWithoutImages = products?.filter(p => !p.image_url) || [];
+  
+  if (productsWithoutImages.length === 0) return null;
+
+  const handleGenerate = async () => {
+    setGenerating(true);
+    let totalGenerated = 0;
+    let remaining = productsWithoutImages.length;
+
+    try {
+      // Process in batches of 3 (to avoid edge function timeout)
+      while (remaining > 0) {
+        setProgress(`Gerando... (${totalGenerated}/${productsWithoutImages.length})`);
+        
+        const { data, error } = await supabase.functions.invoke('generate-product-images', {
+          body: { store_id: storeId, store_type: store?.store_type || 'generico', limit: 3 },
+        });
+
+        if (error) {
+          console.error('Image generation error:', error);
+          toast.error('Erro ao gerar imagens');
+          break;
+        }
+
+        totalGenerated += data?.generated || 0;
+        remaining = data?.remaining || 0;
+
+        if (data?.generated === 0) break; // No more to process
+
+        onComplete(); // Refresh product list to show new images
+      }
+
+      if (totalGenerated > 0) {
+        toast.success(`${totalGenerated} imagens geradas com IA!`);
+        onComplete();
+      }
+    } catch (err) {
+      console.error('Image generation failed:', err);
+      toast.error('Erro ao gerar imagens');
+    } finally {
+      setGenerating(false);
+      setProgress('');
+    }
+  };
+
+  return (
+    <Button
+      variant="outline"
+      onClick={handleGenerate}
+      disabled={generating}
+      className="border-primary/30 text-primary hover:bg-primary/10"
+    >
+      {generating ? (
+        <>
+          <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+          {progress || 'Gerando...'}
+        </>
+      ) : (
+        <>
+          <ImageIcon className="w-4 h-4 mr-2" />
+          Gerar Imagens IA ({productsWithoutImages.length})
+        </>
+      )}
+    </Button>
+  );
+}
