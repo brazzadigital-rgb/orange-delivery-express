@@ -172,11 +172,11 @@ export default function AppHome() {
            <div 
              className="absolute inset-0 pointer-events-none"
              style={{
-               backgroundImage: `url(${(config as any)?.home_bg_image_url || bgHome})`,
-               backgroundSize: 'cover',
-               backgroundPosition: 'center',
-               backgroundRepeat: 'no-repeat',
-               opacity: (config as any)?.home_bg_image_url ? 0.3 : 1,
+                backgroundImage: `url(${config?.home_bg_image_url || bgHome})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                opacity: config?.home_bg_image_url ? 0.3 : 1,
              }}
            />
           <div className="relative z-10 flex items-center justify-between gap-3 mb-4">
