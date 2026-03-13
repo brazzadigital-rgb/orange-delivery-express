@@ -57,6 +57,9 @@ export function useCreateDemoProducts() {
       const { error: prodError } = await supabase.from('products').insert(productsToInsert);
       if (prodError) throw prodError;
 
+      // Trigger AI image generation in background
+      triggerProductImageGeneration(storeId, store?.store_type);
+
       return { categories: categories?.length, products: productsToInsert.length };
     },
     onSuccess: (result) => {
@@ -64,8 +67,31 @@ export function useCreateDemoProducts() {
       queryClient.invalidateQueries({ queryKey: ['admin-categories'] });
       queryClient.invalidateQueries({ queryKey: ['products'] });
       queryClient.invalidateQueries({ queryKey: ['categories'] });
-      toast.success(`${result?.categories} categorias e ${result?.products} produtos criados!`);
+      toast.success(`${result?.categories} categorias e ${result?.products} produtos criados! Gerando imagens com IA...`, {
+        duration: 5000,
+      });
     },
     onError: (error: Error) => toast.error(error.message || 'Erro ao criar dados demo'),
   });
+}
+
+/** Fire-and-forget: triggers edge function to generate AI images for all demo products */
+function triggerProductImageGeneration(storeId: string, storeType: string | null | undefined) {
+  supabase.functions
+    .invoke('generate-product-images', {
+      body: { store_id: storeId, store_type: storeType || 'generico' },
+    })
+    .then(({ data, error }) => {
+      if (error) {
+        console.error('Image generation error:', error);
+        toast.error('Erro ao gerar imagens dos produtos');
+        return;
+      }
+      if (data?.generated > 0) {
+        toast.success(`${data.generated} imagens geradas com IA!`, { duration: 4000 });
+      }
+    })
+    .catch((err) => {
+      console.error('Image generation failed:', err);
+    });
 }
