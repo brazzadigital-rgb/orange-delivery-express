@@ -182,6 +182,7 @@ export type Database = {
           enable_push_notifications: boolean | null
           gradient_end: string | null
           gradient_start: string | null
+          home_bg_image_url: string | null
           id: string
           maintenance_message: string | null
           offline_message: string | null
@@ -216,6 +217,7 @@ export type Database = {
           enable_push_notifications?: boolean | null
           gradient_end?: string | null
           gradient_start?: string | null
+          home_bg_image_url?: string | null
           id?: string
           maintenance_message?: string | null
           offline_message?: string | null
@@ -250,6 +252,7 @@ export type Database = {
           enable_push_notifications?: boolean | null
           gradient_end?: string | null
           gradient_start?: string | null
+          home_bg_image_url?: string | null
           id?: string
           maintenance_message?: string | null
           offline_message?: string | null

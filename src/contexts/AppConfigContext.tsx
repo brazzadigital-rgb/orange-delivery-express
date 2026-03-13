@@ -39,6 +39,7 @@ export interface AppConfig {
   app_icon_512_url: string | null;
   app_icon_maskable_url: string | null;
   splash_image_url: string | null;
+  home_bg_image_url: string | null;
   support_whatsapp: string | null;
   support_email: string | null;
   terms_url: string | null;
