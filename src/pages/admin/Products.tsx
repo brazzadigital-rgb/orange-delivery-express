@@ -8,6 +8,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Badge } from '@/components/ui/badge';
 import { ProductFormDialog } from '@/components/admin/ProductFormDialog';
 import { supabase } from '@/integrations/supabase/client';
+import { useStoreId } from '@/contexts/TenantContext';
+import { useTenant } from '@/contexts/TenantContext';
 import { toast } from 'sonner';
 import { cn } from '@/lib/utils';
 import { useCreateDemoProducts } from '@/hooks/useDemoProducts';
