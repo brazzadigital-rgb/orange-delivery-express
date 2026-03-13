@@ -80,11 +80,9 @@ async function getUserRedirectPath(userId: string, isPortal: boolean): Promise<s
   if (globalRoleSet.has('driver') || storeRoleSet.has('driver')) return '/driver';
   if (globalRoleSet.has('waiter')) return '/waiter';
 
-  // No store access at all — send to onboarding
-  if (!storeRoles || storeRoles.length === 0) {
-    return '/onboarding/create-store';
-  }
-
+  // Regular customers go to the app — even without store_users entries
+  // Only redirect to onboarding if they explicitly have no global role at all
+  // (handle_new_user trigger always creates a 'customer' role)
   return '/app/home';
 }
 
