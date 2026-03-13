@@ -427,6 +427,67 @@ export default function AppSettings() {
               </div>
 
               {/* Splash Image */}
+              {/* Home Background Image */}
+              <div className="bg-card rounded-2xl border p-6 space-y-6">
+                <h3 className="font-semibold text-lg">Imagem de Fundo (Home)</h3>
+                <p className="text-sm text-muted-foreground">
+                  Imagem de fundo exibida no cabeçalho da home do app. Gerada automaticamente com base no segmento da loja ao ser criada.
+                </p>
+                
+                <div className="space-y-3">
+                  <div className="flex items-center gap-4">
+                    <div 
+                      className="w-48 h-28 rounded-xl border-2 border-dashed flex items-center justify-center bg-muted/50 overflow-hidden"
+                      style={{ background: `linear-gradient(135deg, ${currentData.gradient_start || '#FF8A00'}, ${currentData.gradient_end || '#FF6A3D'})` }}
+                    >
+                      {(currentData as any).home_bg_image_url ? (
+                        <img 
+                          src={(currentData as any).home_bg_image_url} 
+                          alt="Home BG" 
+                          className="w-full h-full object-cover opacity-40"
+                        />
+                      ) : (
+                        <Image className="w-8 h-8 text-white/50" />
+                      )}
+                    </div>
+                    <div className="space-y-3">
+                      <Button
+                        variant="outline"
+                        onClick={() => homeBgInputRef.current?.click()}
+                        disabled={uploadAsset.isPending}
+                      >
+                        <Upload className="w-4 h-4 mr-2" />
+                        Upload Fundo
+                      </Button>
+                      <input
+                        ref={homeBgInputRef}
+                        type="file"
+                        accept="image/png,image/jpeg,image/webp"
+                        className="hidden"
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleFileUpload(file, 'app-splash', 'home_bg_image_url');
+                        }}
+                      />
+                      {(currentData as any).home_bg_image_url && (
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="text-destructive"
+                          onClick={() => handleChange('home_bg_image_url', null)}
+                        >
+                          Remover fundo
+                        </Button>
+                      )}
+                      <p className="text-xs text-muted-foreground">
+                        PNG ou JPG, recomendado 800x400px
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Splash Image */}
               <div className="bg-card rounded-2xl border p-6 space-y-6">
                 <h3 className="font-semibold text-lg">Imagem de Splash</h3>
                 

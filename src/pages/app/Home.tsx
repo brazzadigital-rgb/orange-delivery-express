@@ -167,17 +167,18 @@ export default function AppHome() {
             paddingTop: 'max(56px, calc(env(safe-area-inset-top, 24px) + 32px))',
             background: `linear-gradient(135deg, ${config?.gradient_start || 'hsl(var(--primary))'} 0%, ${config?.gradient_end || 'hsl(var(--primary))'} 100%)` 
           }}
-        >
-          {/* Background image overlay */}
-          <div 
-            className="absolute inset-0 pointer-events-none"
-            style={{
-              backgroundImage: `url(${bgHome})`,
-              backgroundSize: 'cover',
-              backgroundPosition: 'center',
-              backgroundRepeat: 'no-repeat',
-            }}
-          />
+         >
+           {/* Background image overlay - use custom or fallback */}
+           <div 
+             className="absolute inset-0 pointer-events-none"
+             style={{
+               backgroundImage: `url(${(config as any)?.home_bg_image_url || bgHome})`,
+               backgroundSize: 'cover',
+               backgroundPosition: 'center',
+               backgroundRepeat: 'no-repeat',
+               opacity: (config as any)?.home_bg_image_url ? 0.3 : 1,
+             }}
+           />
           <div className="relative z-10 flex items-center justify-between gap-3 mb-4">
             {configLoading ? (
               <Skeleton className="h-10 w-28 bg-white/20 flex-shrink-0" />

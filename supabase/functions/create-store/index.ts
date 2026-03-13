@@ -170,6 +170,26 @@ Deno.serve(async (req) => {
 
     // Note: home sections are auto-initialized by the DB trigger (trg_auto_init_home_sections)
 
+    // 7. Trigger AI background generation asynchronously (fire-and-forget)
+    try {
+      const bgResponse = await fetch(`${supabaseUrl}/functions/v1/generate-store-bg`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${serviceKey}`,
+        },
+        body: JSON.stringify({
+          store_id: storeId,
+          store_type: resolvedType,
+        }),
+      });
+      if (!bgResponse.ok) {
+        console.warn("Background generation failed:", await bgResponse.text());
+      }
+    } catch (bgErr) {
+      console.warn("Background generation error (non-fatal):", bgErr);
+    }
+
     return new Response(
       JSON.stringify({
         success: true,
