@@ -4,61 +4,109 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     
-    <!-- App Info - NEUTRAL defaults, will be updated dynamically -->
-    <title>Master App</title>
+    <!-- App Info - Dynamic per store -->
+    <title>Delivery</title>
     <meta name="description" content="Peça agora e receba em casa!">
     <meta name="author" content="Delivery App" />
     
-    <!-- PWA Manifest - Dynamic from Edge Function with cache bust -->
+    <!-- PWA Manifest -->
     <link rel="manifest" id="pwa-manifest" crossorigin="anonymous" />
-    <link rel="icon" type="image/png" href="https://rqunxaidjbqmkktutlcg.supabase.co/storage/v1/object/public/app-icons/app_icon_192_url-1770698738551.png">
-    <link rel="apple-touch-icon" id="pwa-apple-icon" sizes="180x180" href="https://rqunxaidjbqmkktutlcg.supabase.co/storage/v1/object/public/app-icons/app_icon_192_url-1770698738551.png" />
+    <link rel="icon" id="pwa-icon" type="image/png" href="/placeholder.svg">
+    <link rel="apple-touch-icon" id="pwa-apple-icon" sizes="180x180" href="/placeholder.svg" />
+    
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="Delivery" />
+    <meta property="og:description" content="Peça agora e receba em casa!" />
+    <meta property="og:image" content="" />
+    <meta property="og:site_name" content="Delivery" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Delivery" />
+    <meta name="twitter:description" content="Peça agora e receba em casa!" />
+    <meta name="twitter:image" content="" />
+    <meta name="apple-mobile-web-app-title" content="Delivery" />
+    <meta name="application-name" content="Delivery" />
+
     <script>
-      // Fetch app_settings to get current icon URLs and bust cache
+      // Resolve store from hostname and update all meta tags + icons
       (async function() {
-        var _supabaseUrl = 'https://rqunxaidjbqmkktutlcg.supabase.co';
+        var _supabaseUrl = 'https://krwxkahhhoowsymvjrst.supabase.co';
+        var _anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtyd3hrYWhoaG9vd3N5bXZqcnN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMxMTk3NTAsImV4cCI6MjA4ODY5NTc1MH0.-aZBW6OMucQJYW2ZOCurdYFdP7WoCuIDm8qDSKKjLaA';
         var _ts = Date.now();
-        
-        // Manifest - always fresh
-        document.getElementById('pwa-manifest').href = 
-          _supabaseUrl + '/functions/v1/serve-manifest?_=' + _ts;
-        
-        try {
-          var res = await fetch(_supabaseUrl + '/rest/v1/app_settings?select=app_icon_192_url,updated_at&limit=1', {
-            headers: {
-              'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJxdW54YWlkamJxbWtrdHV0bGNnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAxNjQ3MjMsImV4cCI6MjA4NTc0MDcyM30.EyNiqcXxObQDGSaDF47BxTfDLD0VHqmGxmnPvzxpBDM',
-              'Accept': 'application/json'
+        var _h = { 'apikey': _anonKey, 'Accept': 'application/json' };
+
+        // Manifest
+        document.getElementById('pwa-manifest').href = _supabaseUrl + '/functions/v1/serve-manifest?_=' + _ts;
+
+        // Resolve store_id from hostname
+        var host = location.hostname.split(':')[0];
+        var portalDomains = ['deliverylitoral.com.br'];
+        var portalHosts = ['app','www','admin','api'];
+        var slug = null;
+        var storeId = null;
+
+        // Check localStorage override
+        try { storeId = localStorage.getItem('tenant_store_override'); } catch(e) {}
+
+        if (!storeId) {
+          // Extract slug from subdomain
+          for (var i = 0; i < portalDomains.length; i++) {
+            var suffix = '.' + portalDomains[i];
+            if (host.endsWith(suffix)) {
+              var sub = host.slice(0, -suffix.length);
+              if (sub && sub.indexOf('.') === -1 && portalHosts.indexOf(sub) === -1) {
+                slug = sub;
+              }
+              break;
             }
-          });
-          var data = await res.json();
-          if (data && data[0] && data[0].app_icon_192_url) {
-            var iconUrl = data[0].app_icon_192_url + '?v=' + _ts;
-            document.getElementById('pwa-icon').href = iconUrl;
-            document.getElementById('pwa-apple-icon').href = iconUrl;
           }
-        } catch(e) {
-          // no fallback - icons come only from admin config
         }
+
+        // Fetch store by slug
+        if (!storeId && slug) {
+          try {
+            var res = await fetch(_supabaseUrl + '/rest/v1/stores?select=id&slug=eq.' + slug + '&limit=1', { headers: _h });
+            var stores = await res.json();
+            if (stores && stores[0]) storeId = stores[0].id;
+          } catch(e) {}
+        }
+
+        // Fetch app_settings
+        var filter = storeId ? '&store_id=eq.' + storeId : '&limit=1';
+        try {
+          var res2 = await fetch(_supabaseUrl + '/rest/v1/app_settings?select=app_name,app_description,app_icon_192_url,app_icon_512_url,app_logo_url,theme_color,updated_at' + filter, { headers: _h });
+          var data = await res2.json();
+          var s = Array.isArray(data) ? data[0] : data;
+          if (s) {
+            var name = s.app_name || 'Delivery';
+            var desc = s.app_description || 'Peça agora e receba em casa!';
+            var icon = s.app_icon_192_url || s.app_icon_512_url || s.app_logo_url || '';
+
+            document.title = name;
+            var setMeta = function(sel, val) { var el = document.querySelector(sel); if (el) el.setAttribute('content', val); };
+            setMeta('meta[name="description"]', desc);
+            setMeta('meta[property="og:title"]', name);
+            setMeta('meta[property="og:description"]', desc);
+            setMeta('meta[property="og:site_name"]', name);
+            setMeta('meta[name="twitter:title"]', name);
+            setMeta('meta[name="twitter:description"]', desc);
+            setMeta('meta[name="apple-mobile-web-app-title"]', name);
+            setMeta('meta[name="application-name"]', name);
+            if (icon) {
+              var vIcon = icon + '?v=' + _ts;
+              setMeta('meta[property="og:image"]', vIcon);
+              setMeta('meta[name="twitter:image"]', vIcon);
+              document.getElementById('pwa-icon').href = vIcon;
+              document.getElementById('pwa-apple-icon').href = vIcon;
+            }
+            if (s.theme_color) {
+              setMeta('meta[name="theme-color"]', s.theme_color);
+            }
+          }
+        } catch(e) {}
       })();
     </script>
-    
-    <!-- Open Graph - NEUTRAL defaults -->
-    
-    
-    <meta property="og:type" content="website" />
-    <meta property="og:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/o7S528YgaDdztM9QlHXWuDTBa913/social-images/social-1771629524109-BANNER01.webp">
-    <meta property="og:site_name" content="Delivery" />
-    
-    <!-- Twitter - NEUTRAL defaults -->
-    <meta name="twitter:card" content="summary_large_image" />
-    
-    
-    <meta name="twitter:image" content="https://storage.googleapis.com/gpt-engineer-file-uploads/o7S528YgaDdztM9QlHXWuDTBa913/social-images/social-1771629524109-BANNER01.webp">
-    <meta property="og:title" content="Master App">
-  <meta name="twitter:title" content="Master App">
-  <meta property="og:description" content="Peça agora e receba em casa!">
-  <meta name="twitter:description" content="Peça agora e receba em casa!">
-</head>
+  </head>
 
   <body>
     <div id="root"></div>
