@@ -144,6 +144,7 @@ export default function AdminProducts() {
         </div>
         <div className="flex gap-2">
           {stats.total === 0 && <DemoProductsButton />}
+          <GenerateImagesButton products={products} onComplete={refetch} />
           <Button onClick={handleCreate} className="btn-primary">
             <Plus className="w-4 h-4 mr-2" />
             Novo Produto
