@@ -6,20 +6,13 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-interface ProductInfo {
-  id: string;
-  name: string;
-  description: string | null;
-  category_name: string | null;
-}
-
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
   }
 
   try {
-    const { store_id, store_type } = await req.json();
+    const { store_id, store_type, limit } = await req.json();
 
     if (!store_id) {
       return new Response(
@@ -40,12 +33,14 @@ Deno.serve(async (req) => {
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const admin = createClient(supabaseUrl, serviceKey);
 
-    // Fetch all products for this store with their category names
+    // Fetch products without images (limit to batch size to avoid timeout)
+    const batchSize = limit || 3;
     const { data: products, error: fetchError } = await admin
       .from("products")
       .select("id, name, description, categories(name)")
       .eq("store_id", store_id)
-      .is("image_url", null);
+      .is("image_url", null)
+      .limit(batchSize);
 
     if (fetchError) {
       console.error("Fetch products error:", fetchError);
@@ -57,17 +52,22 @@ Deno.serve(async (req) => {
 
     if (!products || products.length === 0) {
       return new Response(
-        JSON.stringify({ success: true, generated: 0 }),
+        JSON.stringify({ success: true, generated: 0, remaining: 0 }),
         { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    console.log(`[generate-product-images] Generating images for ${products.length} products, store_type: ${store_type}`);
+    // Count total remaining (including current batch)
+    const { count: totalRemaining } = await admin
+      .from("products")
+      .select("id", { count: "exact", head: true })
+      .eq("store_id", store_id)
+      .is("image_url", null);
+
+    console.log(`[generate-product-images] Batch of ${products.length}/${totalRemaining} products, type: ${store_type}`);
 
     let generated = 0;
-    const errors: string[] = [];
 
-    // Process products sequentially to avoid rate limiting
     for (const product of products) {
       const categoryName = (product as any).categories?.name || "";
       const prompt = buildPrompt(product.name, product.description, categoryName, store_type);
@@ -92,21 +92,17 @@ Deno.serve(async (req) => {
         if (!aiResponse.ok) {
           const errText = await aiResponse.text();
           console.error(`AI error for "${product.name}":`, aiResponse.status, errText);
-          errors.push(`${product.name}: AI ${aiResponse.status}`);
-          // If rate limited, wait before continuing
           if (aiResponse.status === 429) {
-            await new Promise((r) => setTimeout(r, 5000));
+            await new Promise((r) => setTimeout(r, 3000));
           }
           continue;
         }
 
         const aiData = await aiResponse.json();
-        const imageDataUrl =
-          aiData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
+        const imageDataUrl = aiData.choices?.[0]?.message?.images?.[0]?.image_url?.url;
 
         if (!imageDataUrl || !imageDataUrl.startsWith("data:image")) {
           console.error(`No image for "${product.name}"`);
-          errors.push(`${product.name}: no image`);
           continue;
         }
 
@@ -118,57 +114,36 @@ Deno.serve(async (req) => {
           bytes[i] = binaryStr.charCodeAt(i);
         }
 
-        // Upload to products bucket
         const fileName = `demo-${store_id}/${product.id}.png`;
         const { error: uploadError } = await admin.storage
           .from("products")
-          .upload(fileName, bytes, {
-            contentType: "image/png",
-            upsert: true,
-          });
+          .upload(fileName, bytes, { contentType: "image/png", upsert: true });
 
         if (uploadError) {
           console.error(`Upload error for "${product.name}":`, uploadError);
-          errors.push(`${product.name}: upload failed`);
           continue;
         }
 
-        const { data: urlData } = admin.storage
-          .from("products")
-          .getPublicUrl(fileName);
+        const { data: urlData } = admin.storage.from("products").getPublicUrl(fileName);
 
-        // Update product with image URL
-        const { error: updateError } = await admin
+        await admin
           .from("products")
           .update({ image_url: urlData.publicUrl })
           .eq("id", product.id);
 
-        if (updateError) {
-          console.error(`Update error for "${product.name}":`, updateError);
-          errors.push(`${product.name}: update failed`);
-          continue;
-        }
-
         generated++;
         console.log(`[generate-product-images] ✓ ${product.name}`);
-
-        // Small delay between requests to avoid rate limiting
-        await new Promise((r) => setTimeout(r, 1500));
       } catch (err) {
         console.error(`Error processing "${product.name}":`, err);
-        errors.push(`${product.name}: ${err}`);
       }
     }
 
-    console.log(`[generate-product-images] Done: ${generated}/${products.length} generated`);
+    const remaining = (totalRemaining || 0) - generated;
+
+    console.log(`[generate-product-images] Done: ${generated} generated, ${remaining} remaining`);
 
     return new Response(
-      JSON.stringify({
-        success: true,
-        generated,
-        total: products.length,
-        errors: errors.length > 0 ? errors : undefined,
-      }),
+      JSON.stringify({ success: true, generated, remaining }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err) {
@@ -186,9 +161,5 @@ function buildPrompt(
   categoryName: string,
   storeType: string | null
 ): string {
-  const segment = storeType || "food";
-  return `Professional food photography of "${name}"${description ? ` - ${description}` : ""}. 
-Category: ${categoryName || segment}. 
-Style: Top-down or 45-degree angle shot, beautiful plating on a clean surface, warm natural lighting, shallow depth of field, vibrant colors, appetizing presentation. 
-The image should look like a real restaurant menu photo. No text, no watermarks, no logos. Square format.`;
+  return `Professional food photography of "${name}"${description ? ` - ${description}` : ""}. Category: ${categoryName || storeType || "food"}. Style: Top-down or 45-degree angle shot, beautiful plating on a clean surface, warm natural lighting, shallow depth of field, vibrant colors, appetizing presentation. The image should look like a real restaurant menu photo. No text, no watermarks, no logos. Square format.`;
 }
