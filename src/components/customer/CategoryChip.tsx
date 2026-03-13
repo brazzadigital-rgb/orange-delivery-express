@@ -2,12 +2,13 @@ import { cn } from '@/lib/utils';
 
 interface CategoryChipProps {
   icon?: string;
+  imageUrl?: string | null;
   label: string;
   active?: boolean;
   onClick?: () => void;
 }
 
-export function CategoryChip({ icon, label, active, onClick }: CategoryChipProps) {
+export function CategoryChip({ icon, imageUrl, label, active, onClick }: CategoryChipProps) {
   return (
     <button
       onClick={onClick}
@@ -16,7 +17,11 @@ export function CategoryChip({ icon, label, active, onClick }: CategoryChipProps
         active && 'active'
       )}
     >
-      {icon && <span className="text-base">{icon}</span>}
+      {imageUrl ? (
+        <img src={imageUrl} alt={label} className="w-7 h-7 rounded-full object-cover shrink-0" />
+      ) : icon ? (
+        <span className="text-base">{icon}</span>
+      ) : null}
       <span>{label}</span>
     </button>
   );

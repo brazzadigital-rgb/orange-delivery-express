@@ -278,6 +278,7 @@ export default function AppHome() {
                   <CategoryChip
                     key={category.id}
                     icon={category.icon || '🍕'}
+                    imageUrl={category.image_url}
                     label={category.name}
                     onClick={() => navigate(`/app/category/${category.slug}`)}
                   />

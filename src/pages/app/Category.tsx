@@ -98,6 +98,7 @@ export default function Category() {
             <div key={category.id} data-active={category.slug === slug}>
               <CategoryChip
                 icon={category.icon || '🍕'}
+                imageUrl={category.image_url}
                 label={category.name}
                 active={category.slug === slug}
                 onClick={() => handleCategoryChange(category.slug)}
