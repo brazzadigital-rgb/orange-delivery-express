@@ -2,3 +2,9 @@ project_id = "krwxkahhhoowsymvjrst"
 
 [functions.create-store]
 verify_jwt = false
+
+[functions.generate-store-bg]
+verify_jwt = false
+
+[functions.generate-product-images]
+verify_jwt = false
