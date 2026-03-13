@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Plus, Edit2, Trash2, Eye, EyeOff, Star, Search, Filter, Package, TrendingUp, Sparkles } from 'lucide-react';
+import { useState, useCallback } from 'react';
+import { Plus, Edit2, Trash2, Eye, EyeOff, Star, Search, Filter, Package, TrendingUp, Sparkles, ImageIcon, Loader2 } from 'lucide-react';
 import { useAdminProducts, useAdminCategories } from '@/hooks/useAdmin';
 import { LoadingSpinner } from '@/components/common/LoadingSpinner';
 import { Button } from '@/components/ui/button';
