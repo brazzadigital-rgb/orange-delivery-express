@@ -80,6 +80,7 @@ export default function AppSettings() {
   const icon192InputRef = useRef<HTMLInputElement>(null);
   const icon512InputRef = useRef<HTMLInputElement>(null);
   const splashInputRef = useRef<HTMLInputElement>(null);
+  const homeBgInputRef = useRef<HTMLInputElement>(null);
 
   // Merge settings with form data
   const currentData = { ...settings, ...formData };
